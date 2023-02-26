@@ -4,10 +4,10 @@ import bcryptjs from "bcryptjs";
 import { tokenService } from "../../tokens/tokens.services";
 import { UserDTO } from "./user.dto";
 import { RefreshTokenModel } from "../../tokens/tokens.models";
-import { IUser } from "./user.types";
+import { IUserModel } from "./user.types";
 
 class UserService {
-  async generateAndSaveToken(userFromDb: IUser) {
+  async generateAndSaveTokens(userFromDb: IUserModel) {
     const userDTO = new UserDTO(userFromDb);
     const tokens = tokenService.generateTokens({
       email: userDTO.email,
@@ -21,7 +21,7 @@ class UserService {
     };
   }
   async createUser(body: { email: string; password: string }) {
-    const candidate = await UserModel.findOne({ email: body.email });
+    const candidate = await UserModel.findOne({ email: body.email }).exec();
     if (candidate) {
       throw new ErrorHTTP(
         400,
@@ -32,15 +32,14 @@ class UserService {
     const newUser = await UserModel.create({
       email: body.email,
       password: hashPassword,
-      roles: ["USER"],
     });
 
-    const { tokens, userDTO } = await this.generateAndSaveToken(newUser);
+    const { tokens, userDTO } = await this.generateAndSaveTokens(newUser);
     return { tokens, userDTO };
   }
 
   async getUser(body: { email: string; password: string }) {
-    const user = await UserModel.findOne({ email: body.email });
+    const user = await UserModel.findOne({ email: body.email }).exec();
     if (!user) {
       throw new ErrorHTTP(
         400,
@@ -52,7 +51,7 @@ class UserService {
       throw new ErrorHTTP(400, "Пароль неверный");
     }
 
-    const { tokens, userDTO } = await this.generateAndSaveToken(user);
+    const { tokens, userDTO } = await this.generateAndSaveTokens(user);
     return { tokens, userDTO };
   }
 
@@ -60,7 +59,9 @@ class UserService {
     if (!refreshToken) {
       throw new ErrorHTTP(401, `Вы не авторизованы`);
     }
-    const tokenFromDB = await RefreshTokenModel.findOne({ refreshToken });
+    const tokenFromDB = await RefreshTokenModel.findOne({
+      refreshToken,
+    }).exec();
     const userData = tokenService.validateRefreshToken(refreshToken);
 
     if (!tokenFromDB || !userData) {
@@ -68,13 +69,17 @@ class UserService {
     }
     const user = await UserModel.findById(userData.id);
     if (!user) {
-      throw new ErrorHTTP(400, `Пользователь не существует`);
+      throw new ErrorHTTP(404, `Пользователь не существует`);
     }
-    const { tokens, userDTO } = await this.generateAndSaveToken(user);
+    const { tokens, userDTO } = await this.generateAndSaveTokens(user);
     return {
       tokens,
       userDTO,
     };
+  }
+
+  logout(refreshToken: string) {
+    return tokenService.removeRefreshToken(refreshToken);
   }
 }
 

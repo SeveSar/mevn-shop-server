@@ -1,15 +1,15 @@
-import { IUser, IUserDTO, TypeRole } from "./user.types";
+import { IUserModel, IUserDTO, TypeRole } from "./user.types";
 
 export class UserDTO implements IUserDTO {
   id: string;
-  name?: string;
+  name: string;
   email: string;
-  avatar?: string;
-  birthDay?: string;
-  phone?: string;
+  avatar: string;
+  birthDay: string;
+  phone: string;
   roles: TypeRole[];
 
-  constructor(model: IUser) {
+  constructor(model: IUserModel) {
     this.id = model._id;
     this.name = model.name;
     this.email = model.email;

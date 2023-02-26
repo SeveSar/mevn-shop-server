@@ -2,9 +2,9 @@ import { model, Schema, Types } from "mongoose";
 
 const categorychema = new Schema(
   {
-    title: { type: String, default: "" },
-    description: { type: String, default: "" },
-    products: [{ type: Types.ObjectId, ref: "Product" }],
+    title: { type: String, default: "", unique: true, required: true },
+    description: { type: String, default: null },
+    products: [{ type: Schema.Types.ObjectId, ref: "Product" }],
   },
   {
     timestamps: true,

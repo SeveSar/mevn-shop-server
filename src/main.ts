@@ -3,11 +3,14 @@ dotenv.config();
 import express from "express";
 import { connectToMongoDB } from "./database/mongo";
 import { loggerService } from "./logger";
+
 import { router } from "./routes";
 import { json } from "body-parser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+
 import { errorMiddleware } from "./middleware/error.middleware";
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,11 +26,14 @@ const corsOptions = {
     }
   },
 };
-
+app.use(express.static(path.join(__dirname, "uploads/products")));
+app.use(express.static(path.join(__dirname, "uploads/users")));
 app.use(cors(corsOptions));
 app.use(json());
 app.use(cookieParser());
+
 app.use("/api", router);
+
 app.use(errorMiddleware);
 
 const start = async () => {

@@ -26,10 +26,12 @@ class TokenService {
     };
   }
   async saveRefreshToken(userId: string, refreshToken: string) {
-    const refreshTokenOld = await RefreshTokenModel.findOne({ user: userId });
-    if (refreshTokenOld) {
-      refreshTokenOld.refreshToken = refreshToken;
-      return await refreshTokenOld.save();
+    const refreshTokenFromBD = await RefreshTokenModel.findOne({
+      user: userId,
+    });
+    if (refreshTokenFromBD) {
+      refreshTokenFromBD.refreshToken = refreshToken;
+      return await refreshTokenFromBD.save();
     } else {
       return await RefreshTokenModel.create({
         refreshToken,
@@ -39,11 +41,11 @@ class TokenService {
   }
 
   async removeRefreshToken(refreshToken: string) {
-    return await RefreshTokenModel.deleteOne({ refreshToken });
+    return await RefreshTokenModel.deleteOne({ refreshToken }).exec();
   }
 
   async findRefreshToken(refreshToken: string) {
-    return await RefreshTokenModel.findOne({ refreshToken });
+    return await RefreshTokenModel.findOne({ refreshToken }).exec();
   }
 
   validateAccessToken(accessToken: string) {

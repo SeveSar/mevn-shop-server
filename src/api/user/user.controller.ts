@@ -1,4 +1,4 @@
-import { ErrorHTTP } from "./../../errors/errors.class";
+import { ErrorHTTP } from "../../errors/errors.class";
 
 import { Request, Response, NextFunction } from "express";
 import { loggerService } from "../../logger";
@@ -26,7 +26,7 @@ class UserController {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        // domain: "mevn-cloud-server.onrender.com",
+        domain: "mevn-cloud-server.onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       return res.json({
@@ -85,6 +85,16 @@ class UserController {
       });
     } catch (e) {
       loggerService.err(`[Login]: ${e}`);
+      next(e);
+    }
+  }
+  async logout(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { refreshToken } = req.cookies;
+      await userService.logout(refreshToken);
+      res.clearCookie("refreshToken");
+      return res.json({ success: true });
+    } catch (e) {
       next(e);
     }
   }
