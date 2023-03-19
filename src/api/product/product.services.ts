@@ -28,30 +28,23 @@ export class ProductServices {
           $in: filters,
         },
       })
-        .populate("category")
         .populate("filters")
         .exec();
     } else {
-      items = await ProductModel.find();
+      items = await ProductModel.find().populate("filters").exec();
     }
     return items.map((item) => new ProductDTO(item));
   }
+
   async update(id: string, updateObject: any) {
-    try {
-      const newItem = await ProductModel.findByIdAndUpdate(id, updateObject, {
-        new: true,
-      }).exec();
-      return newItem;
-    } catch (e) {
-      throw e;
-    }
+    const newItem = await ProductModel.findByIdAndUpdate(id, updateObject, {
+      new: true,
+    }).exec();
+    return newItem;
   }
+
   async delete(id: string) {
-    try {
-      await ProductModel.findByIdAndDelete(id).exec();
-    } catch (e) {
-      throw e;
-    }
+    await ProductModel.findByIdAndDelete(id).exec();
   }
 }
 

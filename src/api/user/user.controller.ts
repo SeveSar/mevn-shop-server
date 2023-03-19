@@ -52,6 +52,7 @@ class UserController {
         );
       }
       const { tokens, userDTO } = await userService.getUser(body);
+
       res.cookie("refreshToken", tokens.refreshToken, {
         httpOnly: true,
         secure: true,

@@ -13,11 +13,17 @@ const productSchema = new Schema<IProductModel>(
       validate: [sizesLimit, "Максимум 3 размера"],
     },
     category: { type: String, ref: "Category" },
-    dough: [Number],
-    filters: {
-      type: [Types.ObjectId],
-      ref: "Filter",
-    },
+    dough: [
+      {
+        title: String,
+      },
+    ],
+    filters: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "FilterItem",
+      },
+    ],
   },
   {
     timestamps: true,

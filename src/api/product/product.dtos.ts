@@ -12,6 +12,7 @@ export class ProductDTO {
   category: Schema.Types.ObjectId;
   dough: number[];
   filters: string[];
+
   constructor(model: IProductModel) {
     this.id = model._id;
     this.title = model.title;

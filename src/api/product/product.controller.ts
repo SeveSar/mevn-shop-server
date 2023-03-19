@@ -34,10 +34,12 @@ class ProductController {
       next(e);
     }
   }
+
   async findAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const items = await productService.findAll(req);
-      return res.json(items);
+      const products = await productService.findAll(req);
+
+      return res.json(products);
     } catch (e) {
       next(e);
     }

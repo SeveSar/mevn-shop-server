@@ -8,7 +8,7 @@ import { router } from "./routes";
 import { json } from "body-parser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
+import sessions from "express-session";
 import { errorMiddleware } from "./middleware/error.middleware";
 import path from "path";
 
@@ -31,6 +31,15 @@ app.use(express.static(path.join(__dirname, "uploads/users")));
 app.use(cors(corsOptions));
 app.use(json());
 app.use(cookieParser());
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(
+  sessions({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: false,
+  })
+);
 
 app.use("/api", router);
 
