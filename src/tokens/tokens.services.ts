@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { ITokenPayload } from "../api/user/user.types";
 import { loggerService } from "../logger";
@@ -25,7 +26,7 @@ class TokenService {
       refreshToken,
     };
   }
-  async saveRefreshToken(userId: string, refreshToken: string) {
+  async saveRefreshToken(userId: Types.ObjectId, refreshToken: string) {
     const refreshTokenFromBD = await RefreshTokenModel.findOne({
       user: userId,
     });

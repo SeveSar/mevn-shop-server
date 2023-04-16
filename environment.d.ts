@@ -5,6 +5,7 @@ declare global {
       DB_URL: string;
       JWT_ACCESS_SECRET: string;
       JWT_REFRESH_SECRET: string;
+      SESSION_SECRET: string;
       PORT: number;
     }
   }

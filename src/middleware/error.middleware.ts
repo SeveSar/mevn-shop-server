@@ -1,6 +1,7 @@
 import { ErrorHTTP } from "./../errors/errors.class";
 import { Request, Response, NextFunction } from "express";
 import { loggerService } from "../logger";
+
 export function errorMiddleware(
   err: Error | ErrorHTTP,
   req: Request,
@@ -8,10 +9,11 @@ export function errorMiddleware(
   next: NextFunction
 ) {
   if (err instanceof ErrorHTTP) {
-    loggerService.err(`Ошибка ${err.status}: ${err.message}`);
+    console.error(err);
     res.status(err.status).json({ message: err.message, errors: err.errors });
   } else {
-    loggerService.err(`${err.message}`);
+    console.error(err);
+
     res.status(500).json({ message: err.message });
   }
 }

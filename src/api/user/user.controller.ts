@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { loggerService } from "../../logger";
 import { userService } from "./user.services";
 import { validationResult } from "express-validator";
+import { BasketModel } from "../basket/basket.models";
 
 class UserController {
   async register(
@@ -26,7 +27,7 @@ class UserController {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        domain: "mevn-cloud-server.onrender.com",
+        // domain: "mevn-cloud-server.onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       return res.json({
@@ -45,6 +46,7 @@ class UserController {
   ) {
     try {
       const { body } = req;
+
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(
@@ -60,6 +62,17 @@ class UserController {
         // domain: "mevn-cloud-server.onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
+
+      const basketBySessionId = await BasketModel.findOne({
+        sessionId: req.sessionID,
+      });
+
+      if (basketBySessionId) {
+        basketBySessionId.userId = userDTO.id;
+        basketBySessionId.sessionId = null;
+        basketBySessionId.save();
+      }
+
       return res.json({
         accessToken: tokens.accessToken,
         user: userDTO,

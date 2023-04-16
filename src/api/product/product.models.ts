@@ -9,15 +9,34 @@ const productSchema = new Schema<IProductModel>(
     imageUrl: { type: String, default: null },
     amount: { type: Number, default: null },
     sizes: {
-      type: [Number],
+      type: [
+        {
+          size: Number,
+          price: Number,
+          title: String,
+        },
+      ],
       validate: [sizesLimit, "Максимум 3 размера"],
     },
+    ingredients: {
+      type: [
+        {
+          title: String,
+          price: Number,
+          img: String,
+        },
+      ],
+    },
     category: { type: String, ref: "Category" },
-    dough: [
-      {
-        title: String,
-      },
-    ],
+    dough: {
+      type: [
+        {
+          title: String,
+          price: Number,
+        },
+      ],
+      validate: [doughLimit, "Максимум 2 теста"],
+    },
     filters: [
       {
         type: Schema.Types.ObjectId,
@@ -31,6 +50,10 @@ const productSchema = new Schema<IProductModel>(
 );
 function sizesLimit(val: number[]) {
   return val.length <= 3;
+}
+
+function doughLimit(val: number[]) {
+  return val.length <= 2;
 }
 const ProductModel = model("Product", productSchema);
 

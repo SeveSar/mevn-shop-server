@@ -2,8 +2,9 @@ import { ErrorHTTP } from "./../errors/errors.class";
 import { Request, Response, NextFunction } from "express";
 import { tokenService } from "../tokens/tokens.services";
 import { CustomRequest } from "../types/CustomRequest.interface";
+
 export function authMiddleware(
-  req: CustomRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {
@@ -16,6 +17,7 @@ export function authMiddleware(
     if (!decoded) {
       return next(new ErrorHTTP(401, "Вы не авторизованы"));
     }
+
     req.user = decoded;
 
     next();

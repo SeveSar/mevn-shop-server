@@ -1,7 +1,8 @@
+import { Types } from "mongoose";
 import { IUserModel, IUserDTO, TypeRole } from "./user.types";
 
 export class UserDTO implements IUserDTO {
-  id: string;
+  id: Types.ObjectId;
   name: string;
   email: string;
   avatar: string;

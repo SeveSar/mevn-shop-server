@@ -33,6 +33,7 @@ export class ProductServices {
     } else {
       items = await ProductModel.find().populate("filters").exec();
     }
+
     return items.map((item) => new ProductDTO(item));
   }
 

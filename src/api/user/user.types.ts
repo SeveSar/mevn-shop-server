@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 type TypeRole = "USER" | "ADMIN";
 
 export interface IUser {
@@ -9,16 +11,16 @@ export interface IUser {
   roles: TypeRole[];
 }
 interface IUserDTO extends IUser {
-  id: string;
+  id: Types.ObjectId;
 }
 
 interface IUserModel extends IUser {
-  _id: string;
+  _id: Types.ObjectId;
   password: string;
 }
 interface ITokenPayload {
   email: string;
-  id: string;
+  id: Types.ObjectId;
   roles: TypeRole[];
 }
 
