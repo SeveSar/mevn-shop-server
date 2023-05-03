@@ -3,9 +3,8 @@ import { IProductDTO } from "../product/product.types";
 
 interface IBasket {
   products: { quantity: number; product: Types.ObjectId }[];
-  sessionId: string | null;
   userId: Types.ObjectId | null;
-  cart_quantity: number;
+  quantity: number;
 }
 
 export interface IBasketModel extends IBasket {

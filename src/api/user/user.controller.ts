@@ -4,7 +4,9 @@ import { Request, Response, NextFunction } from "express";
 import { loggerService } from "../../logger";
 import { userService } from "./user.services";
 import { validationResult } from "express-validator";
+
 import { BasketModel } from "../basket/basket.models";
+import { IBasketModel } from "../basket/basket.types";
 
 class UserController {
   async register(
@@ -40,12 +42,16 @@ class UserController {
     }
   }
   async login(
-    req: Request<{}, {}, { email: string; password: string }>,
+    req: Request<
+      {},
+      {},
+      { email: string; password: string; cart?: IBasketModel }
+    >,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const { body } = req;
+      const { email, password, cart } = req.body;
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -53,7 +59,10 @@ class UserController {
           new ErrorHTTP(400, "Не корректный пароль или e-mail", errors)
         );
       }
-      const { tokens, userDTO } = await userService.getUser(body);
+      const { tokens, userDTO } = await userService.getUser({
+        email,
+        password,
+      });
 
       res.cookie("refreshToken", tokens.refreshToken, {
         httpOnly: true,
@@ -62,15 +71,35 @@ class UserController {
         // domain: "mevn-cloud-server.onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
+      console.log(userDTO.id);
+      const candidateBasket = await BasketModel.findOne({
+        userId: userDTO.id,
+      }).exec();
 
-      const basketBySessionId = await BasketModel.findOne({
-        sessionId: req.sessionID,
-      });
+      if (cart) {
+        if (candidateBasket) {
+          for (let item of cart.products) {
+            const idxProduct = candidateBasket.products.findIndex(
+              (pr) =>
+                JSON.stringify(pr.product) === JSON.stringify(item.product)
+            );
 
-      if (basketBySessionId) {
-        basketBySessionId.userId = userDTO.id;
-        basketBySessionId.sessionId = null;
-        basketBySessionId.save();
+            if (idxProduct === -1) {
+              candidateBasket.products.push(item);
+            } else {
+              candidateBasket.products[idxProduct].quantity += item.quantity;
+            }
+          }
+
+          candidateBasket.save();
+        } else {
+          const newBasket = new BasketModel({
+            ...cart,
+            userId: userDTO.id,
+          });
+
+          newBasket.save();
+        }
       }
 
       return res.json({

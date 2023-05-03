@@ -7,6 +7,7 @@ declare global {
       JWT_REFRESH_SECRET: string;
       SESSION_SECRET: string;
       PORT: number;
+      MONGO_DB_NAME: string;
     }
   }
 }
