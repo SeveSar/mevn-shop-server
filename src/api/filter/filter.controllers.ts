@@ -45,7 +45,7 @@ class FilterController {
 
   async updateFilter(req: any, res: any, next: any) {
     const { id } = req.params;
-    console.log("update");
+
     const updatedFilterParent = await FilterModel.findByIdAndUpdate(
       id,
       req.body,

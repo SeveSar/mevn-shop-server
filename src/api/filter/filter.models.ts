@@ -1,6 +1,6 @@
 import { model, Schema, Types } from "mongoose";
-import { IFilter, IFilterItem } from "./filter.types";
-const filterSchema = new Schema<IFilter>(
+import { IFilterModel, IFilterItemModel } from "./filter.types";
+const filterSchema = new Schema<IFilterModel>(
   {
     title: { type: String, unique: true, required: true },
     items: [
@@ -15,7 +15,7 @@ const filterSchema = new Schema<IFilter>(
   }
 );
 
-const filterItemSchema = new Schema<IFilterItem>(
+const filterItemSchema = new Schema<IFilterItemModel>(
   {
     title: { type: String, unique: true, required: true },
     products: [{ type: Schema.Types.ObjectId, ref: "Product" }],
@@ -26,7 +26,7 @@ const filterItemSchema = new Schema<IFilterItem>(
   }
 );
 
-const FilterModel = model<IFilter>("Filter", filterSchema);
-const FilterItemModel = model<IFilterItem>("FilterItem", filterItemSchema);
+const FilterModel = model<IFilterModel>("Filter", filterSchema);
+const FilterItemModel = model<IFilterItemModel>("FilterItem", filterItemSchema);
 
 export { FilterModel, FilterItemModel };

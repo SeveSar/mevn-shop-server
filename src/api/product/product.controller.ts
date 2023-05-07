@@ -38,8 +38,7 @@ class ProductController {
   async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const products = await productService.findAll(req);
-      console.log(req.sessionID);
-      console.log(req.session.cookie.expires);
+
       return res.json(products);
     } catch (e) {
       next(e);

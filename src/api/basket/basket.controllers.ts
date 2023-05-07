@@ -1,5 +1,5 @@
 import { Model, Types, Document } from "mongoose";
-import { CustomRequest } from "./../../types/CustomRequest.interface";
+import { ICustomRequest } from "../../types/CustomRequest";
 import { Request, Response, NextFunction } from "express";
 import { BasketModel } from "./basket.models";
 import { IBasketModel } from "./basket.types";
@@ -9,7 +9,7 @@ class BasketController {
     try {
       const { productId, quantity } = req.body;
 
-      const user = (req as CustomRequest).user;
+      const user = (req as ICustomRequest).user;
 
       let currentBasket = await BasketModel.findOne({ userId: user.id });
 

@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { IFilter } from "../filter/filter.types";
+import { IFilterDTO, IFilterItemDTO } from "../filter/filter.types";
 
 export interface IProduct {
   title: string;
@@ -8,7 +8,7 @@ export interface IProduct {
   imageUrl: string;
   amount: number;
   category: Schema.Types.ObjectId;
-  filters: IFilter[];
+  filters: IFilterItemDTO[];
 }
 
 export interface IProductModel extends IProduct {

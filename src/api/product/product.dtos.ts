@@ -1,6 +1,6 @@
 import { IProductModel } from "./product.types";
 import { Schema } from "mongoose";
-import { IFilter } from "../filter/filter.types";
+import { IFilterItemDTO } from "../filter/filter.types";
 export class ProductDTO {
   id: Schema.Types.ObjectId;
   title: string;
@@ -11,7 +11,7 @@ export class ProductDTO {
   sizes: { title: string; price: number }[];
   category: Schema.Types.ObjectId;
   dough: { title: string; price: number }[];
-  filters: IFilter[];
+  filters: IFilterItemDTO[];
   ingredients: {
     title: string;
     price: number;
@@ -38,5 +38,6 @@ export class ProductDTO {
         img: item.img,
       };
     });
+    this.filters = model.filters;
   }
 }

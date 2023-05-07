@@ -1,8 +1,7 @@
 import { ErrorHTTP } from "./../errors/errors.class";
 import { Request, Response, NextFunction } from "express";
 import { tokenService } from "../tokens/tokens.services";
-import { CustomRequest } from "../types/CustomRequest.interface";
-import { ITokenPayload } from "../api/user/user.types";
+import { ICustomRequest } from "../types/CustomRequest";
 
 export function authMiddleware(
   req: Request,
@@ -18,11 +17,8 @@ export function authMiddleware(
     if (!decoded) {
       return next(new ErrorHTTP(401, "Вы не авторизованы"));
     }
-    const reqCurrent = req as Request & { user: ITokenPayload };
+    const reqCurrent = req as ICustomRequest;
     reqCurrent.user = decoded;
-    // if (!req.user) {
-    //   req.user = decoded;
-    // }
 
     next();
   } catch (e) {

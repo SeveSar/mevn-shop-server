@@ -19,6 +19,7 @@ export class ProductServices {
     }
     return item;
   }
+
   async findAll(req: any) {
     const { filters } = req.query;
     let items;

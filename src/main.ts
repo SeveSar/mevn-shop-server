@@ -28,8 +28,7 @@ const corsOptions = {
   },
 };
 
-app.use(express.static(path.join(__dirname, "uploads")));
-app.use(express.static(path.join(__dirname, "uploads")));
+app.use(express.static(path.join(__dirname, "uploads/products")));
 app.use(express.static(path.join(__dirname, "images")));
 app.use(cors(corsOptions));
 app.use(json());

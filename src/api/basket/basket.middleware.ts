@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { tokenService } from "../../tokens/tokens.services";
-import { CustomRequest } from "../../types/CustomRequest.interface";
+import { ICustomRequest } from "../../types/CustomRequest";
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
   try {
@@ -13,7 +13,7 @@ export function verifyToken(req: Request, res: Response, next: NextFunction) {
       return next();
     }
 
-    (req as CustomRequest).user = decoded;
+    (req as ICustomRequest).user = decoded;
 
     next();
   } catch (e) {
