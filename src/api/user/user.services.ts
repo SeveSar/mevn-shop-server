@@ -23,10 +23,7 @@ class UserService {
   async createUser(body: { email: string; password: string }) {
     const candidate = await UserModel.findOne({ email: body.email }).exec();
     if (candidate) {
-      throw new ErrorHTTP(
-        400,
-        `Пользователь с таким email ${body.email} уже существует`
-      );
+      throw new ErrorHTTP(400, `Пользователь с таким email (${body.email}) уже существует`);
     }
     const hashPassword = await bcryptjs.hash(body.password, 7);
     const newUser = await UserModel.create({
@@ -41,10 +38,7 @@ class UserService {
   async getUser(body: { email: string; password: string }) {
     const user = await UserModel.findOne({ email: body.email }).exec();
     if (!user) {
-      throw new ErrorHTTP(
-        400,
-        `Пользователь с таким email ${body.email} не существует`
-      );
+      throw new ErrorHTTP(400, `Пользователь с таким email ${body.email} не существует`);
     }
     const isValidPassword = bcryptjs.compareSync(body.password, user.password);
     if (!isValidPassword) {
@@ -59,9 +53,8 @@ class UserService {
     if (!refreshToken) {
       throw new ErrorHTTP(401, `Вы не авторизованы`);
     }
-    const tokenFromDB = await RefreshTokenModel.findOne({
-      refreshToken,
-    }).exec();
+    const tokenFromDB = await tokenService.findRefreshToken(refreshToken);
+
     const userData = tokenService.validateRefreshToken(refreshToken);
 
     if (!tokenFromDB || !userData) {

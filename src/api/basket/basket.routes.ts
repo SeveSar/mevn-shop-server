@@ -7,10 +7,7 @@ const basketRouter = Router();
 
 basketRouter.get("/all", basketController.getAll);
 
-basketRouter.post(
-  "/",
-  authMiddleware,
-  basketController.add.bind(basketController)
-);
+basketRouter.get("", authMiddleware, basketController.get);
+basketRouter.post("", authMiddleware, basketController.add.bind(basketController));
 
 export { basketRouter };

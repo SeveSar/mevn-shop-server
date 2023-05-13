@@ -5,7 +5,7 @@ const userRouter = Router();
 
 userRouter.post("/register", userValidations, userController.register);
 userRouter.post("/login", userValidations, userController.login);
-
+userRouter.get("/logout", userValidations, userController.logout);
 userRouter.get("/refresh", userController.refresh);
 
 export { userRouter };
