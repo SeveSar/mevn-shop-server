@@ -3,7 +3,7 @@ dotenv.config();
 import express from "express";
 
 import path from "path";
-
+import axios from "axios";
 import { json } from "body-parser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -33,6 +33,11 @@ app.use(express.static(path.join(__dirname, "images")));
 app.use(cors(corsOptions));
 app.use(json());
 app.use(cookieParser());
+
+app.use((req, res, next) => {
+  loggerService.log(`IP: ${req.ip}`, `Method: ${req.method}`, `URL: ${req.path}`);
+  next();
+});
 
 app.use("/api", router);
 

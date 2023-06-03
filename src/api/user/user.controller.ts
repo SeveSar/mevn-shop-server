@@ -11,6 +11,7 @@ import { ILoginRequest } from "./user.types";
 import { ProductModel } from "../product/product.models";
 import { Types } from "mongoose";
 import { basketService } from "../basket/basket.services";
+import { IDoughModel, ISizeModel } from "../product/product.types";
 
 class UserController {
   async register(req: Request<{}, {}, { email: string; password: string }>, res: Response, next: NextFunction) {
@@ -76,38 +77,51 @@ class UserController {
 
         for (let i = 0; i < cart.length; i++) {
           const item = cart[i];
+
           const idxProduct = candidateBasket.products.findIndex((pr) => pr.product.toString() === item.id.toString());
-          const product = productsDb.find((pr) => pr._id.toString() === item.id);
+          const productDb = productsDb.find((pr) => pr._id.toString() === item.id);
 
-          if (!product) continue;
+          if (!productDb) continue;
 
-          const productIngredients = product.ingredients.filter((ing) => item.ingredients.includes(ing._id.toString()));
+          const productIngredients = productDb.ingredients.filter((ing) =>
+            item.ingredients.find((cartIng) => cartIng.id.toString() === ing._id.toString())
+          );
 
-          if (idxProduct === -1) {
-            const currentItem = {
-              quantity: 1,
-              totalPrice: basketService.calculateTotalPriceProduct(product, {
-                productSize: item.size,
-                productIngredients,
-                productDough: item.dough,
-              }),
-              product: new Types.ObjectId(item.id),
-              size: item.size,
-              dough: item.dough,
-              ingredients: productIngredients,
-            };
-            candidateBasket.products.push(currentItem);
-          } else {
+          console.log(productIngredients, "fafw");
+
+          const productSize = productDb.sizes.find(
+            (prSize) => prSize._id.toString() === item.size.id.toString()
+          ) as ISizeModel;
+
+          const productDough = productDb.dough.find(
+            (prDough) => prDough._id.toString() === item.dough.id.toString()
+          ) as IDoughModel;
+
+          if (idxProduct !== -1) {
             candidateBasket.products[idxProduct].quantity = item.quantity;
-            candidateBasket.products[idxProduct].totalPrice = basketService.calculateTotalPriceProduct(product, {
-              productSize: item.size,
+            candidateBasket.products[idxProduct].totalPrice = basketService.calculateTotalPriceProduct(productDb, {
+              productSize,
               productIngredients,
-              productDough: item.dough,
+              productDough,
               quantity: candidateBasket.products[idxProduct].quantity,
             });
             candidateBasket.products[idxProduct].ingredients = productIngredients;
-            candidateBasket.products[idxProduct].dough = item.dough;
-            candidateBasket.products[idxProduct].size = item.size;
+            candidateBasket.products[idxProduct].dough = productDough;
+            candidateBasket.products[idxProduct].size = productSize;
+          } else {
+            candidateBasket.products.push({
+              quantity: item.quantity,
+              totalPrice: basketService.calculateTotalPriceProduct(productDb, {
+                productSize,
+                productIngredients,
+                productDough,
+                quantity: item.quantity,
+              }),
+              product: new Types.ObjectId(item.id),
+              size: productSize,
+              dough: productDough,
+              ingredients: productIngredients,
+            });
           }
         }
 

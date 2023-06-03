@@ -9,10 +9,13 @@ const basketSchema = new Schema<IBasketModel>(
       {
         product: { type: Schema.Types.ObjectId, ref: "Product" },
         dough: {
+          _id: { type: Types.ObjectId },
           title: { type: String },
           price: { type: Number },
         },
         size: {
+          _id: { type: Types.ObjectId },
+          size: { type: Number },
           title: { type: String },
           price: { type: Number },
         },

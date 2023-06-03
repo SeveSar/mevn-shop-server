@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IDough, ISize } from "../product/product.types";
+import { IDough, IDoughDTO, IIngredientDTO, ISize, ISizeDTO } from "../product/product.types";
 
 type TypeRole = "USER" | "ADMIN";
 
@@ -28,7 +28,14 @@ interface ITokenPayload {
 export interface ILoginRequest {
   email: string;
   password: string;
-  cart?: { id: string; dough: IDough; quantity: number; price: number; size: ISize; ingredients: string[] }[];
+  cart?: {
+    id: string;
+    dough: IDoughDTO;
+    quantity: number;
+    price: number;
+    size: ISizeDTO;
+    ingredients: IIngredientDTO[];
+  }[];
 }
 
 export { TypeRole, IUserDTO, IUserModel, ITokenPayload };

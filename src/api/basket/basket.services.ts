@@ -3,7 +3,7 @@ import { ErrorHTTP } from "../../errors/errors.class";
 import { ProductModel } from "../product/product.models";
 import { BasketModel } from "./basket.models";
 import { ITokenPayload } from "../user/user.types";
-import { IDough, IIngredient, IProductModel, ISize } from "../product/product.types";
+import { IDough, IDoughModel, IIngredient, IProductModel, ISize, ISizeModel } from "../product/product.types";
 
 class BasketService {
   async add({
@@ -19,9 +19,9 @@ class BasketService {
     ingredients: string[];
     user: ITokenPayload;
   }) {
-    const product = await ProductModel.findById(productId).exec();
+    const productDb = await ProductModel.findById(productId).exec();
 
-    if (!product) {
+    if (!productDb) {
       throw new ErrorHTTP(404, "Продукт с таким ID не найден");
     }
 
@@ -31,14 +31,15 @@ class BasketService {
       currentBasket.userId = user.id;
     }
 
-    const productSize = product.sizes.find((prSize) => prSize._id.toString() === size.toString()) ?? null;
-    const productDough = product.dough.find((prDough) => prDough._id.toString() === dough.toString()) ?? null;
-    const productIngredients = product.ingredients.filter((ing) => ingredients.includes(ing._id.toString()));
+    const productSize = productDb.sizes.find((prSize) => prSize._id.toString() === size.toString()) as ISizeModel;
+    const productDough = productDb.dough.find((prDough) => prDough._id.toString() === dough.toString()) as IDoughModel;
+    const productIngredients = productDb.ingredients.filter((ing) => ingredients.includes(ing._id.toString()));
+
     const productIdx = currentBasket.products.findIndex((pr) => pr.product.toString() === productId.toString());
 
     if (productIdx !== -1) {
       currentBasket.products[productIdx].quantity += 1;
-      currentBasket.products[productIdx].totalPrice = this.calculateTotalPriceProduct(product, {
+      currentBasket.products[productIdx].totalPrice = this.calculateTotalPriceProduct(productDb, {
         productSize,
         productDough,
         productIngredients,
@@ -50,17 +51,19 @@ class BasketService {
     } else {
       currentBasket.products.push({
         quantity: 1,
-        totalPrice: this.calculateTotalPriceProduct(product, { productSize, productDough, productIngredients }),
+        totalPrice: this.calculateTotalPriceProduct(productDb, { productSize, productDough, productIngredients }),
         ingredients: productIngredients,
         product: new Types.ObjectId(productId),
         size: productSize,
         dough: productDough,
       });
     }
-    console.log(currentBasket, "BASKET");
+
     await currentBasket.save();
     return currentBasket;
   }
+
+  createOrAddProduct() {}
 
   calculateTotalPriceProduct(
     product: IProductModel,

@@ -1,26 +1,43 @@
 import { Schema, Types } from "mongoose";
-import { IDough, IIngredient, ISize } from "../product/product.types";
+import {
+  IDoughModel,
+  IIngredientDTO,
+  IIngredientModel,
+  ISizeModel,
+  ISizeDTO,
+  IDoughDTO,
+} from "../product/product.types";
 
-interface IBasket {
-  products: {
-    quantity: number;
-    product: Types.ObjectId;
-    totalPrice: number;
-
-    size: ISize | null;
-    dough: IDough | null;
-    ingredients: IIngredient[] | null;
-  }[];
-  userId: Types.ObjectId | null;
-  // totalPrice: number;
+export interface IBasketProduct {
+  quantity: number;
+  product: Types.ObjectId;
+  totalPrice: number;
 }
 
-export interface IBasketModel extends IBasket {
+export interface IBasketModel {
   _id: Types.ObjectId;
+  userId: Types.ObjectId | null;
+  products: IBasketProductModel[];
 }
 
-export interface IBasketDTO extends IBasket {
+export interface IBasketProductModel extends IBasketProduct {
+  _id?: Types.ObjectId;
+  ingredients: IIngredientModel[];
+  size: ISizeModel;
+  dough: IDoughModel;
+}
+
+export interface IBasketProductDTO extends IBasketProduct {
+  id?: Types.ObjectId;
+  ingredients: IIngredientDTO[];
+  size: ISizeDTO | null;
+  dough: IDoughDTO | null;
+}
+
+export interface IBasketDTO {
   id: Types.ObjectId;
+  userId: Types.ObjectId | null;
+  products: IBasketProductDTO[];
 }
 
 export interface IBasketRequest {

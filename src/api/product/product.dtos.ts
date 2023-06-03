@@ -1,4 +1,4 @@
-import { IProductModel } from "./product.types";
+import { IDoughDTO, IIngredientDTO, IProductModel, ISizeDTO } from "./product.types";
 import { Schema } from "mongoose";
 import { IFilterItemDTO } from "../filter/filter.types";
 export class ProductDTO {
@@ -8,16 +8,11 @@ export class ProductDTO {
   description: string;
   imageUrl: string;
   amount: number;
-  sizes: { title: string; price: number }[];
+  sizes: ISizeDTO[];
   category: Schema.Types.ObjectId;
-  dough: { title: string; price: number }[];
+  dough: IDoughDTO[];
   filters: IFilterItemDTO[];
-  ingredients: {
-    title: string;
-    price: number;
-    img: string;
-    id: Schema.Types.ObjectId;
-  }[];
+  ingredients: IIngredientDTO[];
 
   constructor(model: IProductModel) {
     this.id = model._id;
@@ -26,9 +21,22 @@ export class ProductDTO {
     this.description = model.description;
     this.imageUrl = model.imageUrl;
     this.amount = model.amount;
-    this.sizes = model.sizes;
+    this.sizes = model.sizes.map((sz) => {
+      return {
+        id: sz._id,
+        price: sz.price,
+        size: sz.size,
+        title: sz.title,
+      };
+    });
     this.category = model.category;
-    this.dough = model.dough;
+    this.dough = model.dough.map((dh) => {
+      return {
+        id: dh._id,
+        price: dh.price,
+        title: dh.title,
+      };
+    });
     this.filters = model.filters;
     this.ingredients = model.ingredients.map((item) => {
       return {
