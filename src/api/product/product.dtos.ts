@@ -1,7 +1,24 @@
 import { IDoughDTO, IIngredientDTO, IProductModel, ISizeDTO } from "./product.types";
 import { Schema } from "mongoose";
 import { IFilterItemDTO } from "../filter/filter.types";
+
 export class ProductDTO {
+  id: Schema.Types.ObjectId;
+  title: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+
+  constructor(model: IProductModel) {
+    this.id = model._id;
+    this.title = model.title;
+    this.price = model.price;
+    this.description = model.description;
+    this.imageUrl = model.imageUrl;
+  }
+}
+
+export class ProductOneDTO {
   id: Schema.Types.ObjectId;
   title: string;
   price: number;
@@ -46,6 +63,5 @@ export class ProductDTO {
         img: item.img,
       };
     });
-    this.filters = model.filters;
   }
 }

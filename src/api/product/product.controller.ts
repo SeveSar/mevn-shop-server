@@ -5,11 +5,7 @@ import { Types } from "mongoose";
 import { IProduct } from "./product.types";
 
 class ProductController {
-  async create(
-    req: Request<{}, {}, IProduct>,
-    res: Response,
-    next: NextFunction
-  ) {
+  async create(req: Request<{}, {}, IProduct>, res: Response, next: NextFunction) {
     try {
       const product = await productService.create(req.body);
       return res.json(product);
@@ -38,7 +34,7 @@ class ProductController {
   async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const products = await productService.findAll(req);
-
+      console.log(products, "prprp");
       return res.json(products);
     } catch (e) {
       next(e);

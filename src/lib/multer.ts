@@ -17,7 +17,6 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
   if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
     cb(null, true);
   } else {
-    cb(null, false);
     const err = new ErrorHTTP(400, "Разрешены только следующие форматы: jpg, png, jpeg");
     err.name = "ExtensionError";
     return cb(err);
