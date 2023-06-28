@@ -1,7 +1,7 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
-import { IFilterItemDTO, IFilterItemModel, IFilterModel } from "./filter.types";
-import { IProductModel } from "../product/product.types";
+import { IFilterItemDTO, IFilterItemModel, IFilterModel } from './filter.types';
+import { IProductModel } from '../product/product.types';
 
 export class FilterDTO {
   title: string;

@@ -1,5 +1,5 @@
-import { IProductModel } from "../product/product.types";
-import { Types } from "mongoose";
+import { IProductModel } from '../product/product.types';
+import { Types } from 'mongoose';
 
 interface IFilterItem {
   title: string;

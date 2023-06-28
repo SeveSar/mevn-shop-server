@@ -1,6 +1,6 @@
-import { Types } from "mongoose";
-import { IBasketModel, IBasketProductDTO, IBasketProductModel } from "./basket.types";
-import { ProductDTO } from "../product/product.dtos";
+import { Types } from 'mongoose';
+import { IBasketModel, IBasketProductDTO, IBasketProductModel } from './basket.types';
+import { ProductDTO } from '../product/product.dtos';
 
 export class BasketDto {
   id: Types.ObjectId;
@@ -24,9 +24,9 @@ export class BasketDto {
         };
       });
       const serializedSize = { id: size._id, price: size.price, title: size.title, size: size.size };
-      console.log(serializedSize);
+
       const serializedDough = { id: dough._id, price: dough.price, title: dough.title };
-      console.log(serializedDough);
+
       return {
         quantity,
         product,

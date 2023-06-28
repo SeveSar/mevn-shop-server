@@ -1,10 +1,9 @@
-import { Request, Response, NextFunction } from "express";
-import { tokenService } from "../../tokens/tokens.services";
-import { ICustomRequest } from "../../types/CustomRequest";
+import { Request, Response, NextFunction } from 'express';
+import { tokenService } from '../../tokens/tokens.services';
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
       return next();
     }
@@ -13,7 +12,7 @@ export function verifyToken(req: Request, res: Response, next: NextFunction) {
       return next();
     }
 
-    (req as ICustomRequest).user = decoded;
+    req.user = decoded;
 
     next();
   } catch (e) {

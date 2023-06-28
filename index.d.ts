@@ -1,34 +1,28 @@
 // src/types/express/index.d.ts
-import { SessionData } from "express-session";
-import { ITokenPayload } from "./src/api/user/user.types";
-import { Request } from "express";
+import { SessionData } from 'express-session';
+import { ITokenPayload } from './src/api/user/user.types';
+import { Request } from 'express';
+
 // to make the file a module and avoid the TypeScript error
 export {};
 
-declare module "express-session" {
+declare module 'express-session' {
   interface SessionData {
     username: string;
     cart: string[];
   }
 }
 
-declare global {
-  namespace Express {
-    interface Request {
-      user: any;
-    }
+declare module 'express-serve-static-core' {
+  interface Request {
+    user: ITokenPayload;
   }
 }
+
 // declare global {
 //   namespace Express {
 //     interface Request {
-//       user?: ITokenPayload;
-//       session: { username?: string };
+//       user: ITokenPayload;
 //     }
 //   }
 // }
-declare module "express" {
-  export interface Request {
-    user: any;
-  }
-}

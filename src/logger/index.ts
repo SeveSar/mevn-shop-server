@@ -1,26 +1,26 @@
-import { promises } from "fs";
-import { ILogger } from "./logger.types";
-import { Logger } from "tslog";
+import { promises } from 'fs';
+import { ILogger } from './logger.types';
+import { Logger } from 'tslog';
 
 class LoggerService implements ILogger {
   public logger: Logger<{}>;
   constructor() {
     this.logger = new Logger({
       minLevel: 1,
-      prettyErrorStackTemplate: "  • {{fileName}}\t{{method}}\n\t{{filePathWithLine}}",
+      prettyErrorStackTemplate: '  • {{fileName}}\t{{method}}\n\t{{filePathWithLine}}',
       prettyLogStyles: {
-        filePathWithLine: "green",
+        filePathWithLine: 'green',
         logLevelName: {
-          ERROR: ["bold", "red"],
-          INFO: ["bold", "blue"],
-          WARN: ["bold", "yellow"],
+          ERROR: ['bold', 'red'],
+          INFO: ['bold', 'blue'],
+          WARN: ['bold', 'yellow'],
         },
       },
     });
     this.logger.attachTransport(async (logObj) => {
       try {
-        await promises.appendFile("data/logs.txt", JSON.stringify(logObj) + "\n");
-        console.log("Data has been written to the file");
+        await promises.appendFile('data/logs.txt', JSON.stringify(logObj) + '\n');
+        console.log('Data has been written to the file');
       } catch (err) {
         console.error(err);
       }

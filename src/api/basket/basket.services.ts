@@ -1,9 +1,10 @@
-import { Types } from "mongoose";
-import { ErrorHTTP } from "../../errors/errors.class";
-import { ProductModel } from "../product/product.models";
-import { BasketModel } from "./basket.models";
-import { ITokenPayload } from "../user/user.types";
-import { IDough, IDoughModel, IIngredient, IProductModel, ISize, ISizeModel } from "../product/product.types";
+import { Types } from 'mongoose';
+import { ErrorHTTP } from '../../errors/errors.class';
+import { ProductModel } from '../product/product.models';
+import { BasketModel } from './basket.models';
+import { ITokenPayload } from '../user/user.types';
+import { IDough, IDoughModel, IIngredient, IProductModel, ISize, ISizeModel } from '../product/product.types';
+import { IBasketProductModel } from './basket.types';
 
 class BasketService {
   async add({
@@ -22,7 +23,7 @@ class BasketService {
     const productDb = await ProductModel.findById(productId).exec();
 
     if (!productDb) {
-      throw new ErrorHTTP(404, "Продукт с таким ID не найден");
+      throw new ErrorHTTP(404, 'Продукт с таким ID не найден');
     }
 
     let currentBasket = await BasketModel.findOne({ userId: user.id });
@@ -43,13 +44,13 @@ class BasketService {
         productSize,
         productDough,
         productIngredients,
-        quantity: currentBasket.products[productIdx].quantity,
       });
       currentBasket.products[productIdx].dough = productDough;
       currentBasket.products[productIdx].size = productSize;
       currentBasket.products[productIdx].ingredients = productIngredients;
     } else {
       currentBasket.products.push({
+        _id: currentBasket._id,
         quantity: 1,
         totalPrice: this.calculateTotalPriceProduct(productDb, { productSize, productDough, productIngredients }),
         ingredients: productIngredients,
@@ -63,7 +64,30 @@ class BasketService {
     return currentBasket;
   }
 
-  createOrAddProduct() {}
+  async update<T extends keyof IBasketProductModel>({
+    userId,
+    productId,
+    updatedProduct,
+  }: {
+    userId: Types.ObjectId;
+    productId: string;
+    updatedProduct: IBasketProductModel;
+  }) {
+    const basketItem = await BasketModel.findOne({ userId }).populate('products.product').exec();
+    if (!basketItem) throw new ErrorHTTP(404, 'Корзина не найдена');
+
+    const basketProduct = basketItem.products.find((pr) => {
+      return pr.product._id.toString() === productId.toString();
+    });
+
+    if (!basketProduct) throw new ErrorHTTP(404, 'Продукт не найден в корзине');
+
+    (Object.keys(updatedProduct) as Array<T>).forEach((key) => {
+      basketProduct[key] = updatedProduct[key] as IBasketProductModel[T];
+    });
+    await basketItem.save();
+    return basketItem;
+  }
 
   calculateTotalPriceProduct(
     product: IProductModel,
@@ -71,8 +95,7 @@ class BasketService {
       productSize,
       productDough,
       productIngredients,
-      quantity = 1,
-    }: { productSize: ISize | null; productDough: IDough | null; productIngredients: IIngredient[]; quantity?: number }
+    }: { productSize: ISize | null; productDough: IDough | null; productIngredients: IIngredient[] }
   ): number {
     const sizePrice = productSize?.price ?? 0;
     const doughPrice = productDough?.price ?? 0;
@@ -83,7 +106,7 @@ class BasketService {
     }
 
     const totalPriceProduct = (product.price || 0) + sizePrice + doughPrice + ingredientsPrice;
-    return totalPriceProduct * quantity;
+    return totalPriceProduct;
   }
 }
 

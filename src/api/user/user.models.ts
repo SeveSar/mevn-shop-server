@@ -1,5 +1,5 @@
-import { model, Schema, Types } from "mongoose";
-import { IUserModel, TypeRole } from "./user.types";
+import { model, Schema, Types } from 'mongoose';
+import { IUserModel, TypeRole } from './user.types';
 
 const userSchema = new Schema<IUserModel>(
   {
@@ -10,8 +10,8 @@ const userSchema = new Schema<IUserModel>(
     phone: { type: String, default: null },
     roles: {
       type: [String],
-      enum: ["USER", "ADMIN"],
-      default: ["USER"],
+      enum: ['USER', 'ADMIN'],
+      default: ['USER'],
     },
   },
   {
@@ -19,5 +19,5 @@ const userSchema = new Schema<IUserModel>(
   }
 );
 
-const UserModel = model<IUserModel>("User", userSchema);
+const UserModel = model<IUserModel>('User', userSchema);
 export { UserModel };

@@ -1,15 +1,11 @@
-import { ErrorHTTP } from "./../../errors/errors.class";
-import { Request, Response, NextFunction } from "express";
-import { categoryService } from "./category.services";
-import { Types } from "mongoose";
+import { ErrorHTTP } from './../../errors/errors.class';
+import { Request, Response, NextFunction } from 'express';
+import { categoryService } from './category.services';
+import { Types } from 'mongoose';
 
-import { ICategory } from "./category.types";
+import { ICategory } from './category.types';
 class CategoryController {
-  async create(
-    req: Request<{}, {}, ICategory>,
-    res: Response,
-    next: NextFunction
-  ) {
+  async create(req: Request<{}, {}, ICategory>, res: Response, next: NextFunction) {
     try {
       const category = await categoryService.create(req.body);
       return res.json(category);
@@ -22,11 +18,11 @@ class CategoryController {
     try {
       const { id } = req.params;
       if (!id) {
-        return next(new ErrorHTTP(400, "Не указан id категории"));
+        return next(new ErrorHTTP(400, 'Не указан id категории'));
       }
       const isValidId = Types.ObjectId.isValid(id);
       if (!isValidId) {
-        return next(new ErrorHTTP(400, "Некорректный id категории"));
+        return next(new ErrorHTTP(400, 'Некорректный id категории'));
       }
       const category = await categoryService.findOne(id);
       return res.json(category);
@@ -47,7 +43,7 @@ class CategoryController {
       const { id } = req.params;
       const isValidId = Types.ObjectId.isValid(id);
       if (!isValidId) {
-        return next(new ErrorHTTP(400, "Некорректный id категории"));
+        return next(new ErrorHTTP(400, 'Некорректный id категории'));
       }
       const newItem = await categoryService.update(id, req.body);
       return res.json(newItem);
@@ -60,10 +56,10 @@ class CategoryController {
       const { id } = req.params;
       const isValidId = Types.ObjectId.isValid(id);
       if (!isValidId) {
-        return next(new ErrorHTTP(400, "Некорректный id категории"));
+        return next(new ErrorHTTP(400, 'Некорректный id категории'));
       }
       await categoryService.delete(id);
-      return res.json({ message: "Категория удалёна" });
+      return res.json({ message: 'Категория удалёна' });
     } catch (e) {
       next(e);
     }

@@ -1,4 +1,4 @@
-import { FilterItemModel, FilterModel } from "./filter.models";
+import { FilterItemModel, FilterModel } from './filter.models';
 
 class FilterController {
   async create(req: any, res: any, next: any) {
@@ -28,7 +28,7 @@ class FilterController {
   }
 
   async getAll(req: any, res: any, next: any) {
-    const items = await FilterModel.find().populate("items").exec();
+    const items = await FilterModel.find().populate('items').exec();
     return res.json(items);
   }
 
@@ -36,9 +36,9 @@ class FilterController {
     const { parent } = req.query;
     let items;
     if (parent) {
-      items = await FilterItemModel.find({ parent }).populate("parent").exec();
+      items = await FilterItemModel.find({ parent }).populate('parent').exec();
     } else {
-      items = await FilterItemModel.find().populate("parent").exec();
+      items = await FilterItemModel.find().populate('parent').exec();
     }
     return res.json(items);
   }
@@ -46,26 +46,18 @@ class FilterController {
   async updateFilter(req: any, res: any, next: any) {
     const { id } = req.params;
 
-    const updatedFilterParent = await FilterModel.findByIdAndUpdate(
-      id,
-      req.body,
-      {
-        new: true,
-      }
-    ).exec();
+    const updatedFilterParent = await FilterModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    }).exec();
     return res.json(updatedFilterParent);
   }
 
   async updateFilterItem(req: any, res: any, next: any) {
     const { id } = req.params;
 
-    const updatedFilterItem = await FilterItemModel.findByIdAndUpdate(
-      id,
-      req.body,
-      {
-        new: true,
-      }
-    ).exec();
+    const updatedFilterItem = await FilterItemModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    }).exec();
     return res.json(updatedFilterItem);
   }
 

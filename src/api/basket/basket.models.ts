@@ -1,13 +1,12 @@
-import { model, Schema, Types } from "mongoose";
-import { IBasketModel } from "./basket.types";
-import { ProductModel } from "../product/product.models";
+import { model, Schema, Types } from 'mongoose';
+import { IBasketModel } from './basket.types';
 
 const basketSchema = new Schema<IBasketModel>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    userId: { type: Types.ObjectId, ref: 'User' },
     products: [
       {
-        product: { type: Schema.Types.ObjectId, ref: "Product" },
+        product: { type: Types.ObjectId, ref: 'Product' },
         dough: {
           _id: { type: Types.ObjectId },
           title: { type: String },
@@ -62,6 +61,6 @@ const basketSchema = new Schema<IBasketModel>(
 //   console.log(this.products, "products");
 //   next();
 // });
-const BasketModel = model<IBasketModel>("Basket", basketSchema);
+const BasketModel = model<IBasketModel>('Basket', basketSchema);
 
 export { BasketModel };

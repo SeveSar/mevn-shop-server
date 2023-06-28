@@ -1,5 +1,5 @@
-import { model, Schema, Types } from "mongoose";
-import { IProductModel } from "./product.types";
+import { model, Schema, Types } from 'mongoose';
+import { IProductModel } from './product.types';
 
 const productSchema = new Schema<IProductModel>(
   {
@@ -16,7 +16,7 @@ const productSchema = new Schema<IProductModel>(
           title: String,
         },
       ],
-      validate: [sizesLimit, "Максимум 3 размера"],
+      validate: [sizesLimit, 'Максимум 3 размера'],
     },
     ingredients: {
       type: [
@@ -27,7 +27,7 @@ const productSchema = new Schema<IProductModel>(
         },
       ],
     },
-    category: { type: String, ref: "Category" },
+    category: { type: Schema.Types.ObjectId, ref: 'Category' },
     dough: {
       type: [
         {
@@ -35,12 +35,12 @@ const productSchema = new Schema<IProductModel>(
           price: Number,
         },
       ],
-      validate: [doughLimit, "Максимум 2 теста"],
+      validate: [doughLimit, 'Максимум 2 теста'],
     },
     filters: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "FilterItem",
+        type: Types.ObjectId,
+        ref: 'FilterItem',
       },
     ],
   },
@@ -55,6 +55,6 @@ function sizesLimit(val: number[]) {
 function doughLimit(val: number[]) {
   return val.length <= 2;
 }
-const ProductModel = model("Product", productSchema);
+const ProductModel = model('Product', productSchema);
 
 export { ProductModel };

@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
-import { IUserModel, IUserDTO, TypeRole } from "./user.types";
+import { Types } from 'mongoose';
+import { IUserModel, IUserDTO, TypeRole } from './user.types';
 
 export class UserDTO implements IUserDTO {
   id: Types.ObjectId;

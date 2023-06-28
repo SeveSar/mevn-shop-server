@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import { IFilterDTO, IFilterItemDTO } from "../filter/filter.types";
+import { Schema, Types } from 'mongoose';
+import { IFilterDTO, IFilterItemDTO } from '../filter/filter.types';
 
 export interface IProduct {
   title: string;
@@ -7,7 +7,7 @@ export interface IProduct {
   description: string;
   imageUrl: string;
   amount: number;
-  category: Schema.Types.ObjectId;
+  category: Types.ObjectId;
   filters: IFilterItemDTO[];
 }
 
@@ -17,7 +17,7 @@ export interface IIngredient {
   img: string;
 }
 export interface IIngredientModel extends IIngredient {
-  _id: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
 }
 
 export interface IDough {
@@ -26,7 +26,7 @@ export interface IDough {
 }
 
 export interface IDoughModel extends IDough {
-  _id: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
 }
 
 export interface ISize {
@@ -36,29 +36,29 @@ export interface ISize {
 }
 
 export interface ISizeModel extends ISize {
-  _id: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
 }
 
 export interface IProductModel extends IProduct {
-  _id: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
   ingredients: IIngredientModel[];
   dough: IDoughModel[];
   sizes: ISizeModel[];
 }
 
 export interface IDoughDTO extends IDough {
-  id: Schema.Types.ObjectId;
+  id: Types.ObjectId;
 }
 export interface ISizeDTO extends ISize {
-  id: Schema.Types.ObjectId;
+  id: Types.ObjectId;
 }
 
 export interface IIngredientDTO extends IIngredient {
-  id: Schema.Types.ObjectId;
+  id: Types.ObjectId;
 }
 
 export interface IProductDTO extends IProduct {
-  id: Schema.Types.ObjectId;
+  id: Types.ObjectId;
   ingredients: IIngredientDTO[];
   dough: IDoughDTO[];
   sizes: ISizeDTO[];

@@ -1,7 +1,7 @@
-import { Types } from "mongoose";
-import { IDough, IDoughDTO, IIngredientDTO, ISize, ISizeDTO } from "../product/product.types";
+import { Types } from 'mongoose';
+import { IDough, IDoughDTO, IIngredientDTO, ISize, ISizeDTO } from '../product/product.types';
 
-type TypeRole = "USER" | "ADMIN";
+type TypeRole = 'USER' | 'ADMIN';
 
 export interface IUser {
   name: string;

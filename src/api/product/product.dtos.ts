@@ -1,9 +1,9 @@
-import { IDoughDTO, IIngredientDTO, IProductModel, ISizeDTO } from "./product.types";
-import { Schema } from "mongoose";
-import { IFilterItemDTO } from "../filter/filter.types";
+import { IDoughDTO, IIngredientDTO, IProductModel, ISizeDTO } from './product.types';
+import { Schema, Types } from 'mongoose';
+import { IFilterItemDTO } from '../filter/filter.types';
 
 export class ProductDTO {
-  id: Schema.Types.ObjectId;
+  id: Types.ObjectId;
   title: string;
   price: number;
   description: string;
@@ -19,14 +19,14 @@ export class ProductDTO {
 }
 
 export class ProductOneDTO {
-  id: Schema.Types.ObjectId;
+  id: Types.ObjectId;
   title: string;
   price: number;
   description: string;
   imageUrl: string;
   amount: number;
   sizes: ISizeDTO[];
-  category: Schema.Types.ObjectId;
+  category: Types.ObjectId;
   dough: IDoughDTO[];
   filters: IFilterItemDTO[];
   ingredients: IIngredientDTO[];

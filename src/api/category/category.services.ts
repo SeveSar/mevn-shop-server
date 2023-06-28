@@ -1,6 +1,6 @@
-import { ErrorHTTP } from "./../../errors/errors.class";
-import { CategoryModel } from "./category.models";
-import { ICategory } from "./category.types";
+import { ErrorHTTP } from './../../errors/errors.class';
+import { CategoryModel } from './category.models';
+import { ICategory } from './category.types';
 
 export class CategoryService {
   async create(product: ICategory) {
@@ -13,14 +13,14 @@ export class CategoryService {
   }
 
   async findOne(id: string) {
-    const item = await CategoryModel.findById(id).populate("products");
+    const item = await CategoryModel.findById(id).populate('products');
     if (!item) {
-      throw new ErrorHTTP(404, "Категория не найдена");
+      throw new ErrorHTTP(404, 'Категория не найдена');
     }
     return item;
   }
   async findAll() {
-    const items = await CategoryModel.find().populate("products");
+    const items = await CategoryModel.find().populate('products');
     return items;
   }
   async update(id: string, updateObject: any) {

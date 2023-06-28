@@ -1,4 +1,4 @@
-import { Schema, Types } from "mongoose";
+import { Schema, Types } from 'mongoose';
 import {
   IDoughModel,
   IIngredientDTO,
@@ -6,7 +6,7 @@ import {
   ISizeModel,
   ISizeDTO,
   IDoughDTO,
-} from "../product/product.types";
+} from '../product/product.types';
 
 export interface IBasketProduct {
   quantity: number;
@@ -21,14 +21,14 @@ export interface IBasketModel {
 }
 
 export interface IBasketProductModel extends IBasketProduct {
-  _id?: Types.ObjectId;
+  _id: Types.ObjectId;
   ingredients: IIngredientModel[];
   size: ISizeModel;
   dough: IDoughModel;
 }
 
 export interface IBasketProductDTO extends IBasketProduct {
-  id?: Types.ObjectId;
+  id: Types.ObjectId;
   ingredients: IIngredientDTO[];
   size: ISizeDTO | null;
   dough: IDoughDTO | null;

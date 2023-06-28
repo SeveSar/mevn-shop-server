@@ -1,16 +1,15 @@
-import { Types } from "mongoose";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { ITokenPayload } from "../api/user/user.types";
-import { loggerService } from "../logger";
-import { RefreshTokenModel } from "./tokens.models";
+import { Types } from 'mongoose';
+import jwt from 'jsonwebtoken';
+import { ITokenPayload } from '../api/user/user.types';
+import { RefreshTokenModel } from './tokens.models';
 
 class TokenService {
   generateTokens(payload: ITokenPayload) {
     const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, {
-      expiresIn: "10m",
+      expiresIn: '10m',
     });
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, {
-      expiresIn: "7d",
+      expiresIn: '7d',
     });
 
     return {

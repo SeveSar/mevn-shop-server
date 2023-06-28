@@ -1,10 +1,10 @@
-import { ErrorHTTP } from "./../../errors/errors.class";
-import { UserModel } from "./user.models";
-import bcryptjs from "bcryptjs";
-import { tokenService } from "../../tokens/tokens.services";
-import { UserDTO } from "./user.dto";
-import { RefreshTokenModel } from "../../tokens/tokens.models";
-import { IUserModel } from "./user.types";
+import { ErrorHTTP } from './../../errors/errors.class';
+import { UserModel } from './user.models';
+import bcryptjs from 'bcryptjs';
+import { tokenService } from '../../tokens/tokens.services';
+import { UserDTO } from './user.dto';
+
+import { IUserModel } from './user.types';
 
 class UserService {
   async generateAndSaveTokens(userFromDb: IUserModel) {
@@ -42,7 +42,7 @@ class UserService {
     }
     const isValidPassword = bcryptjs.compareSync(body.password, user.password);
     if (!isValidPassword) {
-      throw new ErrorHTTP(400, "Пароль неверный");
+      throw new ErrorHTTP(400, 'Пароль неверный');
     }
 
     const { tokens, userDTO } = await this.generateAndSaveTokens(user);

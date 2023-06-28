@@ -1,8 +1,8 @@
-import { ErrorHTTP } from "./../../errors/errors.class";
-import { Request, Response, NextFunction } from "express";
-import { productService } from "./product.services";
-import { Types } from "mongoose";
-import { IProduct } from "./product.types";
+import { ErrorHTTP } from './../../errors/errors.class';
+import { Request, Response, NextFunction } from 'express';
+import { productService } from './product.services';
+import { Types } from 'mongoose';
+import { IProduct } from './product.types';
 
 class ProductController {
   async create(req: Request<{}, {}, IProduct>, res: Response, next: NextFunction) {
@@ -18,11 +18,11 @@ class ProductController {
     try {
       const { id } = req.params;
       if (!id) {
-        throw new ErrorHTTP(400, "Не указан id продукта");
+        throw new ErrorHTTP(400, 'Не указан id продукта');
       }
       const isValidId = Types.ObjectId.isValid(id);
       if (!isValidId) {
-        throw new ErrorHTTP(400, "Некорректный id продукта");
+        throw new ErrorHTTP(400, 'Некорректный id продукта');
       }
       const item = await productService.findOne(id);
       return res.json(item);
@@ -34,18 +34,19 @@ class ProductController {
   async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const products = await productService.findAll(req);
-      console.log(products, "prprp");
+      console.log(products, 'prprp');
       return res.json(products);
     } catch (e) {
       next(e);
     }
   }
+
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const isValidId = Types.ObjectId.isValid(id);
       if (!isValidId) {
-        throw new ErrorHTTP(400, "Некорректный id продукта");
+        throw new ErrorHTTP(400, 'Некорректный id продукта');
       }
       const newItem = await productService.update(id, req.body);
       return res.json(newItem);
@@ -58,10 +59,10 @@ class ProductController {
       const { id } = req.params;
       const isValidId = Types.ObjectId.isValid(id);
       if (!isValidId) {
-        throw new ErrorHTTP(400, "Некорректный id продукта");
+        throw new ErrorHTTP(400, 'Некорректный id продукта');
       }
       await productService.delete(id);
-      return res.json({ message: "Продукт удалён" });
+      return res.json({ message: 'Продукт удалён' });
     } catch (e) {
       next(e);
     }

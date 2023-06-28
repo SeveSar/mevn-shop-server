@@ -1,8 +1,8 @@
-import { ProductDTO, ProductOneDTO } from "./product.dtos";
-import { ErrorHTTP } from "./../../errors/errors.class";
-import { ProductModel } from "./product.models";
-import { IProduct } from "./product.types";
-import { Request, Response, NextFunction } from "express";
+import { ProductDTO, ProductOneDTO } from './product.dtos';
+import { ErrorHTTP } from './../../errors/errors.class';
+import { ProductModel } from './product.models';
+import { IProduct } from './product.types';
+import { Request, Response, NextFunction } from 'express';
 export class ProductServices {
   async create(product: IProduct) {
     const newItem = await ProductModel.create({
@@ -15,7 +15,7 @@ export class ProductServices {
   async findOne(id: string) {
     const item = await ProductModel.findById(id).exec();
     if (!item) {
-      throw new ErrorHTTP(404, "Продукт не найден");
+      throw new ErrorHTTP(404, 'Продукт не найден');
     }
     return new ProductOneDTO(item);
   }
@@ -29,13 +29,13 @@ export class ProductServices {
           $in: filters,
         },
       })
-        .populate("filters")
+        .populate('filters')
         .exec();
     } else {
-      items = await ProductModel.find().populate("filters").exec();
+      items = await ProductModel.find().populate('filters').exec();
     }
     items = items.map((item) => new ProductDTO(item));
-    console.log(items, "items");
+    console.log(items, 'items');
     return items;
   }
 

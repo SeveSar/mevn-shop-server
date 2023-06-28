@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, Types } from 'mongoose';
 export interface ICategory {
   title: string;
   price: number;
@@ -6,13 +6,13 @@ export interface ICategory {
   imageUrl: string;
   amount: number;
   sizes: number[];
-  category: Schema.Types.ObjectId;
+  category: Types.ObjectId;
   dough: number;
 }
 export interface IProductModel extends ICategory {
-  _id: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
 }
 
 export interface IProductDTO extends ICategory {
-  id: Schema.Types.ObjectId;
+  id: Types.ObjectId;
 }
