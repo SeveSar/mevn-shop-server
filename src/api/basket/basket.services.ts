@@ -64,7 +64,7 @@ class BasketService {
     return currentBasket;
   }
 
-  async update<T extends keyof IBasketProductModel>({
+  async updateProduct<T extends keyof IBasketProductModel>({
     userId,
     productId,
     updatedProduct,
@@ -87,6 +87,16 @@ class BasketService {
     });
     await basketItem.save();
     return basketItem;
+  }
+
+  async removeProduct({ userId, productId }: { userId: Types.ObjectId; productId: string }) {
+    const basketBd = await BasketModel.findOne({ userId });
+    if (!basketBd) throw new ErrorHTTP(404, 'Корзина не найдена');
+    const productIdx = basketBd.products.findIndex((pr) => pr.product.toString() === productId.toString());
+    if (productIdx === -1) throw new ErrorHTTP(404, 'Продукт не найден в корзине');
+    basketBd.products.splice(productIdx, 1);
+    await basketBd.save();
+    return basketBd;
   }
 
   calculateTotalPriceProduct(

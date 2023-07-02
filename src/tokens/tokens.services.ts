@@ -1,14 +1,14 @@
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { ITokenPayload } from '../api/user/user.types';
+import type { ITokenPayload } from '../api/user/user.types';
 import { RefreshTokenModel } from './tokens.models';
 
 class TokenService {
   generateTokens(payload: ITokenPayload) {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, {
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
       expiresIn: '10m',
     });
-    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, {
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
       expiresIn: '7d',
     });
 
@@ -17,6 +17,7 @@ class TokenService {
       refreshToken,
     };
   }
+
   async saveRefreshToken(userId: Types.ObjectId, refreshToken: string) {
     const refreshTokenFromBD = await RefreshTokenModel.findOne({
       user: userId,
@@ -42,15 +43,16 @@ class TokenService {
 
   validateAccessToken(accessToken: string) {
     try {
-      const userDecoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET as string) as ITokenPayload;
+      const userDecoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET) as ITokenPayload;
       return userDecoded;
     } catch (e) {
       return null;
     }
   }
+
   validateRefreshToken(refreshToken: string) {
     try {
-      const userDecoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string) as ITokenPayload;
+      const userDecoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET) as ITokenPayload;
       return userDecoded;
     } catch (e) {
       return null;

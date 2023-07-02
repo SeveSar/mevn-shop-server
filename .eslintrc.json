@@ -1,6 +1,10 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "extends": ["plugin:@typescript-eslint/recommended"],
-  "parserOptions": { "ecmaVersion": 2018, "sourceType": "module" },
-  "rules": {}
+  "extends": ["@antfu", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "antfu/if-newline": "off",
+    "no-console": "off",
+    "@typescript-eslint/consistent-type-imports": "0"
+  }
 }

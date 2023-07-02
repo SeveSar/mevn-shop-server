@@ -41,7 +41,7 @@ class BasketController {
     }
   }
 
-  async update(req: Request<{ id: string }, object, IBasketProductModel>, res: Response, next: NextFunction) {
+  async updateProduct(req: Request<{ id: string }, {}, IBasketProductModel>, res: Response, next: NextFunction) {
     try {
       const { ...updatedProduct } = req.body;
 
@@ -52,7 +52,23 @@ class BasketController {
       if (!isValidId) {
         throw new ErrorHTTP(400, 'Некорректный id продукта');
       }
-      const newItem = await basketService.update({ userId, productId: id, updatedProduct });
+      const newItem = await basketService.updateProduct({ userId, productId: id, updatedProduct });
+      return res.json(newItem);
+    } catch (e) {
+      console.log(e, 'ERROR');
+      next(e);
+    }
+  }
+
+  async removeProduct(req: Request<{ id: string }, {}>, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      const isValidId = Types.ObjectId.isValid(id);
+      if (!isValidId) {
+        throw new ErrorHTTP(400, 'Некорректный id продукта');
+      }
+      const newItem = await basketService.removeProduct({ userId, productId: id });
       return res.json(newItem);
     } catch (e) {
       console.log(e, 'ERROR');
