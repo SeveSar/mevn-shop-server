@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-
+import { get as getEnv } from 'env-var';
 import path from 'path';
 import axios from 'axios';
 import { json } from 'body-parser';
@@ -14,7 +14,7 @@ import { router } from './routes';
 import { errorMiddleware } from './middleware/error.middleware';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = getEnv('PORT').required().asIntPositive();
 
 const whitelist = ['http://localhost:3000', 'http://localhost:5050'];
 const corsOptions = {

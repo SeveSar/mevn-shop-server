@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-
-const DB_URL = process.env.DB_URL ?? '';
-
+import { get as getEnv } from 'env-var';
+const DB_URL = getEnv('DB_URL').required().asString();
+const dbName = getEnv('MONGO_DB_NAME').required().asString();
 const options = {
-  dbName: process.env.MONGO_DB_NAME,
+  dbName,
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };

@@ -34,7 +34,7 @@ class ProductController {
   async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const products = await productService.findAll(req);
-      console.log(products, 'prprp');
+
       return res.json(products);
     } catch (e) {
       next(e);
