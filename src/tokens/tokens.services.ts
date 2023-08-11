@@ -6,7 +6,7 @@ import { RefreshTokenModel } from './tokens.models';
 class TokenService {
   generateTokens(payload: ITokenPayload) {
     const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
-      expiresIn: '10m',
+      expiresIn: '7m',
     });
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
       expiresIn: '7d',

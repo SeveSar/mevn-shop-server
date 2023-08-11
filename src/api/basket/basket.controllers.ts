@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { BasketModel } from './basket.models';
 
-import { IBasketProductDTO, IBasketProductModel, IBasketRequest } from './basket.types';
+import { IBasketProductModel, IBasketRequest } from './basket.types';
 
 import { basketService } from './basket.services';
-import { BasketDto } from './basket.dto';
+
 import { ErrorHTTP } from '../../errors/errors.class';
 import { Types } from 'mongoose';
 
@@ -30,12 +30,10 @@ class BasketController {
   async get(req: Request, res: Response, next: NextFunction) {
     try {
       const user = req.user;
-      const basket = await BasketModel.findOne({ userId: user.id }).populate('products.product');
-      if (!basket) {
-        throw new ErrorHTTP(404, 'Корзина не найдена');
-      }
 
-      return res.json(new BasketDto(basket));
+      const basket = await basketService.getByUserId(user.id);
+
+      return res.json(basket);
     } catch (e) {
       next(e);
     }
@@ -52,10 +50,10 @@ class BasketController {
       if (!isValidId) {
         throw new ErrorHTTP(400, 'Некорректный id продукта');
       }
-      const newItem = await basketService.updateProduct({ userId, productId: id, updatedProduct });
+      const newItem = await basketService.updateProduct({ user: userId, productId: id, updatedProduct });
       return res.json(newItem);
     } catch (e) {
-      console.log(e, 'ERROR');
+      console.error(e, 'ERROR');
       next(e);
     }
   }
@@ -71,7 +69,7 @@ class BasketController {
       const newItem = await basketService.removeProduct({ userId, productId: id });
       return res.json(newItem);
     } catch (e) {
-      console.log(e, 'ERROR');
+      console.error(e, 'ERROR');
       next(e);
     }
   }

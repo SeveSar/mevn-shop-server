@@ -1,8 +1,9 @@
+import { UserDTO } from './../user/user.dto';
 import { Types } from 'mongoose';
 import { ErrorHTTP } from '../../errors/errors.class';
 import { ProductModel } from '../product/product.models';
-import { BasketModel } from './basket.models';
-import { ITokenPayload } from '../user/user.types';
+import { BasketModel, BasketProductModel } from './basket.models';
+import { ILoginRequest, ITokenPayload } from '../user/user.types';
 import { IDough, IDoughModel, IIngredient, IProductModel, ISize, ISizeModel } from '../product/product.types';
 import { IBasketProductModel } from './basket.types';
 
@@ -26,31 +27,32 @@ class BasketService {
       throw new ErrorHTTP(404, 'Продукт с таким ID не найден');
     }
 
-    let currentBasket = await BasketModel.findOne({ userId: user.id });
+    let currentBasket = await BasketModel.findOne({ user: user.id });
     if (!currentBasket) {
       currentBasket = new BasketModel();
-      currentBasket.userId = user.id;
+      currentBasket.user = user.id;
     }
 
     const productSize = productDb.sizes.find((prSize) => prSize._id.toString() === size.toString()) as ISizeModel;
     const productDough = productDb.dough.find((prDough) => prDough._id.toString() === dough.toString()) as IDoughModel;
     const productIngredients = productDb.ingredients.filter((ing) => ingredients.includes(ing._id.toString()));
 
-    const productIdx = currentBasket.products.findIndex((pr) => pr.product.toString() === productId.toString());
+    let productBasket = await BasketProductModel.findOne({ basket: currentBasket._id, product: productId });
 
-    if (productIdx !== -1) {
-      currentBasket.products[productIdx].quantity += 1;
-      currentBasket.products[productIdx].totalPrice = this.calculateTotalPriceProduct(productDb, {
+    if (productBasket) {
+      productBasket.quantity = productBasket.quantity + 1;
+      productBasket.totalPrice = this.calculateTotalPriceProduct(productDb, {
         productSize,
         productDough,
         productIngredients,
       });
-      currentBasket.products[productIdx].dough = productDough;
-      currentBasket.products[productIdx].size = productSize;
-      currentBasket.products[productIdx].ingredients = productIngredients;
+      productBasket.dough = productDough;
+      productBasket.size = productSize;
+      productBasket.ingredients = productIngredients;
+      await productBasket.save();
     } else {
-      currentBasket.products.push({
-        _id: currentBasket._id,
+      const newBasketProduct = await BasketProductModel.create({
+        basket: currentBasket._id,
         quantity: 1,
         totalPrice: this.calculateTotalPriceProduct(productDb, { productSize, productDough, productIngredients }),
         ingredients: productIngredients,
@@ -58,43 +60,54 @@ class BasketService {
         size: productSize,
         dough: productDough,
       });
+      currentBasket.products.push(newBasketProduct._id);
     }
 
     await currentBasket.save();
     return currentBasket;
   }
 
-  async updateProduct<T extends keyof IBasketProductModel>({
-    userId,
+  async getByUserId(userId: Types.ObjectId) {
+    const basket = await BasketModel.findOne({ user: userId })
+      .populate({
+        path: 'products',
+        populate: { path: 'product' },
+      })
+      .exec();
+
+    if (!basket) throw new ErrorHTTP(404, 'Корзина не найдена');
+    return basket;
+  }
+
+  async updateProduct({
+    user,
     productId,
     updatedProduct,
   }: {
-    userId: Types.ObjectId;
+    user: Types.ObjectId;
     productId: string;
     updatedProduct: IBasketProductModel;
   }) {
-    const basketItem = await BasketModel.findOne({ userId }).populate('products.product').exec();
+    const basketItem = await BasketModel.findOne({ user }).populate('products').exec();
     if (!basketItem) throw new ErrorHTTP(404, 'Корзина не найдена');
 
-    const basketProduct = basketItem.products.find((pr) => {
-      return pr.product._id.toString() === productId.toString();
-    });
+    const basketProduct = await BasketProductModel.findOne({ basket: basketItem._id, product: productId }).exec();
 
     if (!basketProduct) throw new ErrorHTTP(404, 'Продукт не найден в корзине');
+    basketProduct.quantity = updatedProduct.quantity;
 
-    (Object.keys(updatedProduct) as Array<T>).forEach((key) => {
-      basketProduct[key] = updatedProduct[key] as IBasketProductModel[T];
-    });
-    await basketItem.save();
-    return basketItem;
+    await basketProduct.save();
+    return basketItem.save();
   }
 
   async removeProduct({ userId, productId }: { userId: Types.ObjectId; productId: string }) {
-    const basketBd = await BasketModel.findOne({ userId });
+    const basketBd = await BasketModel.findOne({ user: userId });
     if (!basketBd) throw new ErrorHTTP(404, 'Корзина не найдена');
-    const productIdx = basketBd.products.findIndex((pr) => pr.product.toString() === productId.toString());
-    if (productIdx === -1) throw new ErrorHTTP(404, 'Продукт не найден в корзине');
-    basketBd.products.splice(productIdx, 1);
+    const productBasket = await BasketProductModel.findOne({ basket: basketBd._id, product: productId }).exec();
+    if (!productBasket) throw new ErrorHTTP(404, 'Продукт не найден в корзине');
+
+    basketBd.products = basketBd.products.filter((ids) => productBasket._id.toString() === ids.toString());
+    await productBasket.remove();
     await basketBd.save();
     return basketBd;
   }
@@ -117,6 +130,77 @@ class BasketService {
 
     const totalPriceProduct = (product.price || 0) + sizePrice + doughPrice + ingredientsPrice;
     return totalPriceProduct;
+  }
+
+  async createOrUpdateBasket(cart: ILoginRequest['cart'], userDTO: UserDTO) {
+    if (!cart) return;
+
+    let candidateBasket = await BasketModel.findOne({
+      user: userDTO._id,
+    }).exec();
+
+    const productCartIds = cart.map((item) => item.id);
+
+    if (!candidateBasket) {
+      candidateBasket = new BasketModel();
+      candidateBasket.user = userDTO._id;
+    }
+    const [productsDb, productsBasket] = await Promise.all([
+      ProductModel.find({ _id: { $in: productCartIds } }),
+      BasketProductModel.find({ basket: candidateBasket._id, product: { $in: productCartIds } }),
+    ]);
+
+    for (let i = 0; i < cart.length; i++) {
+      const item = cart[i];
+
+      const productBasket = productsBasket.find((pr) => pr.product.toString() === item.id.toString());
+
+      const productDb = productsDb.find((pr) => pr._id.toString() === item.id.toString());
+
+      if (!productDb) continue;
+
+      const productIngredients = productDb.ingredients.filter((ing) =>
+        item.ingredients.find((cartIng) => cartIng.id.toString() === ing._id.toString())
+      );
+
+      const productSize = productDb.sizes.find(
+        (prSize) => prSize._id.toString() === item.size.id.toString()
+      ) as ISizeModel;
+
+      const productDough = productDb.dough.find(
+        (prDough) => prDough._id.toString() === item.dough.id.toString()
+      ) as IDoughModel;
+
+      if (productBasket) {
+        productBasket.quantity = item.quantity;
+        productBasket.totalPrice = basketService.calculateTotalPriceProduct(productDb, {
+          productSize,
+          productIngredients,
+          productDough,
+        });
+        productBasket.ingredients = productIngredients;
+        productBasket.dough = productDough;
+        productBasket.size = productSize;
+        productBasket.save();
+      } else {
+        const newBasketProduct = await BasketProductModel.create({
+          basket: candidateBasket._id,
+          quantity: item.quantity,
+          totalPrice: basketService.calculateTotalPriceProduct(productDb, {
+            productSize,
+            productDough,
+            productIngredients,
+          }),
+          ingredients: productIngredients,
+          product: new Types.ObjectId(item.id),
+          size: productSize,
+          dough: productDough,
+        });
+        candidateBasket.products.push(newBasketProduct._id);
+      }
+    }
+
+    return await candidateBasket.save();
   }
 }
 

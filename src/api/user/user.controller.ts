@@ -1,3 +1,4 @@
+import { UserDTO } from './user.dto';
 import { ErrorHTTP } from '../../errors/errors.class';
 
 import { Request, Response, NextFunction } from 'express';
@@ -5,7 +6,7 @@ import { loggerService } from '../../logger';
 import { userService } from './user.services';
 import { validationResult } from 'express-validator';
 
-import { BasketModel } from '../basket/basket.models';
+import { BasketModel, BasketProductModel } from '../basket/basket.models';
 import { IBasketModel } from '../basket/basket.types';
 import { ILoginRequest } from './user.types';
 import { ProductModel } from '../product/product.models';
@@ -60,81 +61,20 @@ class UserController {
         // domain: "mevn-cloud-server.onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
-      let candidateBasket;
-      if (cart) {
-        candidateBasket = await BasketModel.findOne({
-          userId: userDTO.id,
-        }).exec();
 
-        const productCartIds = cart.map((item) => item.id);
-
-        const productsDb = await ProductModel.find({ _id: { $in: productCartIds } });
-
-        if (!candidateBasket) {
-          candidateBasket = new BasketModel();
-          candidateBasket.userId = userDTO.id;
-        }
-
-        for (let i = 0; i < cart.length; i++) {
-          const item = cart[i];
-
-          const idxProduct = candidateBasket.products.findIndex((pr) => pr.product.toString() === item.id.toString());
-          const productDb = productsDb.find((pr) => pr._id.toString() === item.id);
-
-          if (!productDb) continue;
-
-          const productIngredients = productDb.ingredients.filter((ing) =>
-            item.ingredients.find((cartIng) => cartIng.id.toString() === ing._id.toString())
-          );
-
-          const productSize = productDb.sizes.find(
-            (prSize) => prSize._id.toString() === item.size.id.toString()
-          ) as ISizeModel;
-
-          const productDough = productDb.dough.find(
-            (prDough) => prDough._id.toString() === item.dough.id.toString()
-          ) as IDoughModel;
-
-          if (idxProduct !== -1) {
-            candidateBasket.products[idxProduct].quantity = item.quantity;
-            candidateBasket.products[idxProduct].totalPrice = basketService.calculateTotalPriceProduct(productDb, {
-              productSize,
-              productIngredients,
-              productDough,
-            });
-            candidateBasket.products[idxProduct].ingredients = productIngredients;
-            candidateBasket.products[idxProduct].dough = productDough;
-            candidateBasket.products[idxProduct].size = productSize;
-          } else {
-            candidateBasket.products.push({
-              _id: candidateBasket._id,
-              quantity: item.quantity,
-              totalPrice: basketService.calculateTotalPriceProduct(productDb, {
-                productSize,
-                productIngredients,
-                productDough,
-              }),
-              product: new Types.ObjectId(item.id),
-              size: productSize,
-              dough: productDough,
-              ingredients: productIngredients,
-            });
-          }
-        }
-
-        candidateBasket.save();
-      }
+      await basketService.createOrUpdateBasket(cart, userDTO);
 
       return res.json({
         accessToken: tokens.accessToken,
         user: userDTO,
-        cart: candidateBasket ? candidateBasket : {},
       });
     } catch (e) {
+      console.dir(e);
       loggerService.err(`[Login]: ${e}`);
       next(e);
     }
   }
+
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
       const { refreshToken } = req.cookies;

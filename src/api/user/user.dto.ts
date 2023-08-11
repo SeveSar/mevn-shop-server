@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
-import { IUserModel, IUserDTO, TypeRole } from './user.types';
+import { IUserModel, TypeRole } from './user.types';
 
-export class UserDTO implements IUserDTO {
-  id: Types.ObjectId;
+export class UserDTO {
+  _id: Types.ObjectId;
   name: string;
   email: string;
   avatar: string;
@@ -11,7 +11,7 @@ export class UserDTO implements IUserDTO {
   roles: TypeRole[];
 
   constructor(model: IUserModel) {
-    this.id = model._id;
+    this._id = model._id;
     this.name = model.name;
     this.email = model.email;
     this.avatar = model.avatar;

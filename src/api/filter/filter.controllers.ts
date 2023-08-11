@@ -1,4 +1,7 @@
+import { NextFunction, Request, Response } from 'express';
+import { Types } from 'mongoose';
 import { FilterItemModel, FilterModel } from './filter.models';
+import { ErrorHTTP } from '../../errors/errors.class';
 
 class FilterController {
   async create(req: any, res: any, next: any) {
@@ -52,22 +55,30 @@ class FilterController {
     return res.json(updatedFilterParent);
   }
 
-  async updateFilterItem(req: any, res: any, next: any) {
-    const { id } = req.params;
+  async updateFilterItem(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
 
-    const updatedFilterItem = await FilterItemModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-    }).exec();
-    return res.json(updatedFilterItem);
+      const updatedFilterItem = await FilterItemModel.findByIdAndUpdate(id, req.body, {
+        new: true,
+      }).exec();
+      return res.json(updatedFilterItem);
+    } catch (e) {
+      next(e);
+    }
   }
 
-  async deleteOne(req: any, res: any, next: any) {
-    const { id } = req.params;
-    // const isValidId = Types.ObjectId.isValid(id);
-    // if (!isValidId) {
-    //   throw new ErrorHTTP(400, "Некорректный id продукта");
-    // }
-    await FilterModel.findByIdAndDelete(id).exec();
+  async deleteOne(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const isValidId = Types.ObjectId.isValid(id);
+      if (!isValidId) {
+        throw new ErrorHTTP(400, 'Некорректный id продукта');
+      }
+      await FilterModel.findByIdAndDelete(id).exec();
+    } catch (e) {
+      next(e);
+    }
   }
 }
 

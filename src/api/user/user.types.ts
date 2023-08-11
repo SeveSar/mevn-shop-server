@@ -11,9 +11,6 @@ export interface IUser {
   phone: string;
   roles: TypeRole[];
 }
-interface IUserDTO extends IUser {
-  id: Types.ObjectId;
-}
 
 interface IUserModel extends IUser {
   _id: Types.ObjectId;
@@ -38,4 +35,4 @@ export interface ILoginRequest {
   }[];
 }
 
-export { TypeRole, IUserDTO, IUserModel, ITokenPayload };
+export { TypeRole, IUserModel, ITokenPayload };

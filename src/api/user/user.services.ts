@@ -11,10 +11,10 @@ class UserService {
     const userDTO = new UserDTO(userFromDb);
     const tokens = tokenService.generateTokens({
       email: userDTO.email,
-      id: userDTO.id,
+      id: userDTO._id,
       roles: userDTO.roles,
     });
-    await tokenService.saveRefreshToken(userDTO.id, tokens.refreshToken);
+    await tokenService.saveRefreshToken(userDTO._id, tokens.refreshToken);
     return {
       tokens,
       userDTO,

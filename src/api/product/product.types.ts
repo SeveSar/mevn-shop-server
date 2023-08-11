@@ -1,5 +1,5 @@
 import { Schema, Types } from 'mongoose';
-import { IFilterDTO, IFilterItemDTO } from '../filter/filter.types';
+import { IFilterItemDTO } from '../filter/filter.types';
 
 export interface IProduct {
   title: string;
@@ -44,22 +44,4 @@ export interface IProductModel extends IProduct {
   ingredients: IIngredientModel[];
   dough: IDoughModel[];
   sizes: ISizeModel[];
-}
-
-export interface IDoughDTO extends IDough {
-  id: Types.ObjectId;
-}
-export interface ISizeDTO extends ISize {
-  id: Types.ObjectId;
-}
-
-export interface IIngredientDTO extends IIngredient {
-  id: Types.ObjectId;
-}
-
-export interface IProductDTO extends IProduct {
-  id: Types.ObjectId;
-  ingredients: IIngredientDTO[];
-  dough: IDoughDTO[];
-  sizes: ISizeDTO[];
 }

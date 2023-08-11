@@ -27,7 +27,7 @@ const productSchema = new Schema<IProductModel>(
         },
       ],
     },
-    category: { type: Schema.Types.ObjectId, ref: 'Category' },
+
     dough: {
       type: [
         {
@@ -37,6 +37,7 @@ const productSchema = new Schema<IProductModel>(
       ],
       validate: [doughLimit, 'Максимум 2 теста'],
     },
+    category: { type: Schema.Types.ObjectId, ref: 'Category' },
     filters: [
       {
         type: Types.ObjectId,

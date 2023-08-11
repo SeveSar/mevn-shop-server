@@ -1,32 +1,42 @@
 import { model, Schema, Types } from 'mongoose';
-import { IBasketModel } from './basket.types';
+import { IBasketModel, IBasketProductModel } from './basket.types';
+
+const basketProductSchema = new Schema<IBasketProductModel>({
+  basket: {
+    type: Schema.Types.ObjectId,
+    ref: 'Basket',
+  },
+  product: { type: Schema.Types.ObjectId, ref: 'Product' },
+  dough: {
+    title: { type: String },
+    price: { type: Number },
+  },
+  size: {
+    size: { type: Number },
+    title: { type: String },
+    price: { type: Number },
+  },
+  ingredients: [
+    {
+      title: { type: String },
+      price: { type: Number },
+      img: { type: String },
+    },
+  ],
+  quantity: { type: Number, default: 0 },
+  totalPrice: { type: Number },
+});
+
+const BasketProductModel = model<IBasketProductModel>('BasketProduct', basketProductSchema);
 
 const basketSchema = new Schema<IBasketModel>(
   {
-    userId: { type: Types.ObjectId, ref: 'User' },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     products: [
       {
-        product: { type: Types.ObjectId, ref: 'Product' },
-        dough: {
-          _id: { type: Types.ObjectId },
-          title: { type: String },
-          price: { type: Number },
-        },
-        size: {
-          _id: { type: Types.ObjectId },
-          size: { type: Number },
-          title: { type: String },
-          price: { type: Number },
-        },
-        quantity: { type: Number, default: 0 },
-        totalPrice: { type: Number },
-        ingredients: [
-          {
-            title: { type: String },
-            price: { type: Number },
-            img: { type: String },
-          },
-        ],
+        type: Schema.Types.ObjectId,
+        ref: 'BasketProduct',
+        required: true,
       },
     ],
   },
@@ -63,4 +73,4 @@ const basketSchema = new Schema<IBasketModel>(
 // });
 const BasketModel = model<IBasketModel>('Basket', basketSchema);
 
-export { BasketModel };
+export { BasketModel, BasketProductModel };

@@ -31,9 +31,10 @@ class ProductController {
     }
   }
 
-  async findAll(req: Request, res: Response, next: NextFunction) {
+  async findAll(req: Request<{ filters: string[] }>, res: Response, next: NextFunction) {
+    const { filters } = req.params;
     try {
-      const products = await productService.findAll(req);
+      const products = await productService.findAll(filters);
 
       return res.json(products);
     } catch (e) {
