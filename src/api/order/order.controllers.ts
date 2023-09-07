@@ -26,8 +26,8 @@ class OrderController {
   async getAllByUserId(req: Request, res: Response, next: NextFunction) {
     try {
       const user = req.user;
-      const items = await orderService.getByUserId(user.id);
-      return res.json(items);
+      const order = await orderService.getByUserId(user.id, '1');
+      return res.json(order);
     } catch (e) {
       next(e);
     }

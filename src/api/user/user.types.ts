@@ -1,5 +1,7 @@
+import { IIngredient, IIngredientModel, ISize } from './../product/product.types';
 import { Types } from 'mongoose';
-import { IDough, IDoughDTO, IIngredientDTO, ISize, ISizeDTO } from '../product/product.types';
+import { IDough, ISizeModel } from '../product/product.types';
+import { IDoughModel } from '../product/product.types';
 
 type TypeRole = 'USER' | 'ADMIN';
 
@@ -27,11 +29,11 @@ export interface ILoginRequest {
   password: string;
   cart?: {
     id: string;
-    dough: IDoughDTO;
+    dough: IDough & { id: string };
     quantity: number;
     price: number;
-    size: ISizeDTO;
-    ingredients: IIngredientDTO[];
+    size: ISize & { id: string };
+    ingredients: (IIngredient & { id: string })[];
   }[];
 }
 

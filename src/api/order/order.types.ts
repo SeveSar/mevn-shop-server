@@ -6,7 +6,7 @@ export type TOrderModel = {
   _id: Types.ObjectId;
   user: Types.ObjectId;
   name: string;
-  phone: string;
+  phone: number;
   email: string;
   status: TOrderStatus;
   products: IOrderProduct[];
@@ -33,7 +33,7 @@ export interface IOrderProduct {
 export interface IOrderAddress {
   _id: Types.ObjectId;
   street: string;
-  house?: string;
+  house?: number;
   porch?: number;
   floor?: number;
   flat?: number;

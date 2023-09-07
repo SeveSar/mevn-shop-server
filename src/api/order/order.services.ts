@@ -62,13 +62,19 @@ class OrderService {
     return newOrderModel;
   }
 
-  async getByUserId(userId: Types.ObjectId) {
+  async getByUserId(userId: Types.ObjectId, page: string) {
+    const localPage = parseInt(page) || 1; // Получение номера страницы из запроса
+    const perPage = 10; // Количество элементов на странице
+    const totalItems = await OrderModel.countDocuments();
     const orderItems = await OrderModel.find({ user: userId })
+      .skip((localPage - 1) * perPage)
+      .limit(perPage)
       .populate({ path: 'products', populate: { path: 'product' } })
       .populate('user')
+      .populate('address')
       .exec();
     if (!orderItems) throw new ErrorHTTP(404, 'Заказы не найден');
-    return orderItems;
+    return { items: orderItems, currentPage: page, total: totalItems };
   }
 }
 

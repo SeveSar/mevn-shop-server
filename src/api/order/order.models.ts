@@ -7,7 +7,7 @@ const orderSchema = new Schema<TOrderModel>(
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     email: { type: String, unique: true, default: null },
     name: { type: String, required: true, default: null },
-    phone: { type: String, default: null },
+    phone: { type: Number, default: null },
     products: [
       {
         type: Schema.Types.ObjectId,
@@ -23,7 +23,7 @@ const orderSchema = new Schema<TOrderModel>(
       type: String,
       default: ORDER_STATUS['PROCESSED'],
       required: true,
-      enum: [ORDER_STATUS['DELIVERED'], ORDER_STATUS['CANCELED'], ORDER_STATUS['PROCESSED']],
+      enum: [ORDER_STATUS['DONE'], ORDER_STATUS['CANCELED'], ORDER_STATUS['PROCESSED']],
     },
     comment: { type: String },
     address: { type: Schema.Types.ObjectId, ref: 'OrderAddress', default: null },
@@ -66,11 +66,11 @@ const OrderModel = model<TOrderModel>('Order', orderSchema);
 const orderAddressSchema = new Schema<IOrderAddress>(
   {
     street: { type: String, required: true },
-    flat: { type: String, default: null },
+    flat: { type: Number, default: null },
     door_phone: { type: Number, default: null },
     porch: { type: Number, default: null },
     floor: { type: Number, default: null },
-    house: { type: String, default: null },
+    house: { type: Number, default: null },
   },
 
   {
