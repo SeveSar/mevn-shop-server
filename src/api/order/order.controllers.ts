@@ -23,10 +23,11 @@ class OrderController {
     }
   }
 
-  async getAllByUserId(req: Request, res: Response, next: NextFunction) {
+  async getAllByUserId(req: Request<{}, {}, { page: string }>, res: Response, next: NextFunction) {
     try {
       const user = req.user;
-      const order = await orderService.getByUserId(user.id, '1');
+      const page = req.query.page as string;
+      const order = await orderService.getByUserId(user.id, page);
       return res.json(order);
     } catch (e) {
       next(e);

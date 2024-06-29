@@ -28,6 +28,7 @@ const corsOptions = {
   },
 };
 
+
 app.use(express.static(path.join(__dirname, 'uploads/products')));
 app.use(express.static(path.join(__dirname, 'images')));
 app.use(cors(corsOptions));
@@ -50,6 +51,7 @@ const start = async () => {
       loggerService.log(`Server has started on port: ${PORT}`);
     });
   } catch (e) {
+    console.log(e)
     loggerService.err(e);
   }
 };

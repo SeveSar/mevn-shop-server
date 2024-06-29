@@ -149,7 +149,6 @@ class BasketService {
       ProductModel.find({ _id: { $in: productCartIds } }),
       BasketProductModel.find({ basket: candidateBasket._id, product: { $in: productCartIds } }),
     ]);
-
     for (let i = 0; i < cart.length; i++) {
       const item = cart[i];
 
@@ -162,7 +161,6 @@ class BasketService {
       const productIngredients = productDb.ingredients.filter((ing) =>
         item.ingredients.find((cartIng) => cartIng.id.toString() === ing._id.toString())
       );
-
       const productSize = productDb.sizes.find(
         (prSize) => prSize._id.toString() === item.size.id.toString()
       ) as ISizeModel;

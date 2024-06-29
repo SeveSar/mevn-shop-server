@@ -6,13 +6,10 @@ import { loggerService } from '../../logger';
 import { userService } from './user.services';
 import { validationResult } from 'express-validator';
 
-import { BasketModel, BasketProductModel } from '../basket/basket.models';
-import { IBasketModel } from '../basket/basket.types';
-import { ILoginRequest } from './user.types';
+import { ILoginRequest, UserUpdateRequest } from './user.types';
 import { ProductModel } from '../product/product.models';
 import { Types } from 'mongoose';
 import { basketService } from '../basket/basket.services';
-import { IDoughModel, ISizeModel } from '../product/product.types';
 
 class UserController {
   async register(req: Request<{}, {}, { email: string; password: string }>, res: Response, next: NextFunction) {
@@ -57,7 +54,7 @@ class UserController {
       res.cookie('refreshToken', tokens.refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: 'none',
+        // sameSite: 'none',
         // domain: "mevn-cloud-server.onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
@@ -71,6 +68,16 @@ class UserController {
     } catch (e) {
       console.dir(e);
       loggerService.err(`[Login]: ${e}`);
+      next(e);
+    }
+  }
+
+  async update(req: Request<{}, {}, UserUpdateRequest>, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.user;
+      const updatedUser = await userService.updateUser(req.body, id);
+      return res.json(updatedUser);
+    } catch (e) {
       next(e);
     }
   }

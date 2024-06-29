@@ -63,9 +63,9 @@ class OrderService {
   }
 
   async getByUserId(userId: Types.ObjectId, page: string) {
-    const localPage = parseInt(page) || 1; // Получение номера страницы из запроса
-    const perPage = 10; // Количество элементов на странице
-    const totalItems = await OrderModel.countDocuments();
+    const localPage = typeof page === 'string' ? Number(page) : page || 1;
+    const perPage = 5;
+    const totalItems = await OrderModel.countDocuments({ user: userId }).exec()
     const orderItems = await OrderModel.find({ user: userId })
       .skip((localPage - 1) * perPage)
       .limit(perPage)
@@ -74,7 +74,7 @@ class OrderService {
       .populate('address')
       .exec();
     if (!orderItems) throw new ErrorHTTP(404, 'Заказы не найден');
-    return { items: orderItems, currentPage: page, total: totalItems };
+    return { items: orderItems, currentPage: localPage, total: totalItems };
   }
 }
 

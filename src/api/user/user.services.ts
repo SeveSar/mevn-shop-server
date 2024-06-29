@@ -4,7 +4,8 @@ import bcryptjs from 'bcryptjs';
 import { tokenService } from '../../tokens/tokens.services';
 import { UserDTO } from './user.dto';
 
-import { IUserModel } from './user.types';
+import { IUserModel, UserUpdateRequest } from './user.types';
+import { Types } from 'mongoose';
 
 class UserService {
   async generateAndSaveTokens(userFromDb: IUserModel) {
@@ -47,6 +48,13 @@ class UserService {
 
     const { tokens, userDTO } = await this.generateAndSaveTokens(user);
     return { tokens, userDTO };
+  }
+
+  async updateUser(userFields: UserUpdateRequest, userId: Types.ObjectId) {
+    const updatedUser = await UserModel.findOneAndUpdate({ _id: userId }, userFields, { new: true });
+
+    if (!updatedUser) throw new ErrorHTTP(404, 'Пользователь не существует');
+    return updatedUser;
   }
 
   async refresh(refreshToken: string) {

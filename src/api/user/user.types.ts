@@ -25,8 +25,8 @@ interface ITokenPayload {
 }
 
 export interface ILoginRequest {
-  email: string;
-  password: string;
+  email: IUser['email'];
+  password: IUserModel['password'];
   cart?: {
     id: string;
     dough: IDough & { id: string };
@@ -36,5 +36,7 @@ export interface ILoginRequest {
     ingredients: (IIngredient & { id: string })[];
   }[];
 }
+
+export type UserUpdateRequest = Omit<IUser, 'roles'> & { password: IUserModel['password'] };
 
 export { TypeRole, IUserModel, ITokenPayload };

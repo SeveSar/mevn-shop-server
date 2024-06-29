@@ -1,8 +1,8 @@
-import { check } from 'express-validator';
+import { body } from 'express-validator';
 
 export const userValidations = [
-  check('email', 'Неверный e-mail').isEmail(),
-  check('password', 'Минимальная длинна пароля - 6 символов').isLength({
+  body('email', 'Неверный e-mail').isEmail(),
+  body('password', 'Минимальная длинна пароля - 6 символов').isLength({
     min: 6,
   }),
 ];
