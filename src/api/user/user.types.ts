@@ -23,19 +23,22 @@ interface ITokenPayload {
   id: Types.ObjectId;
   roles: TypeRole[];
 }
+export interface ICart {
+  id: string;
+  dough: IDough & { id: string };
+  quantity: number;
+  price: number;
+  size: ISize & { id: string };
+  ingredients: (IIngredient & { id: string })[];
+}
 
-export interface ILoginRequest {
+export interface UserAuthRequest {
   email: IUser['email'];
   password: IUserModel['password'];
-  cart?: {
-    id: string;
-    dough: IDough & { id: string };
-    quantity: number;
-    price: number;
-    size: ISize & { id: string };
-    ingredients: (IIngredient & { id: string })[];
-  }[];
+  cart?: ICart[];
 }
+
+
 
 export type UserUpdateRequest = Omit<IUser, 'roles'> & { password: IUserModel['password'] };
 

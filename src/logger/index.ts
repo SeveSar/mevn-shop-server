@@ -17,14 +17,14 @@ class LoggerService implements ILogger {
         },
       },
     });
-    this.logger.attachTransport(async (logObj) => {
-      try {
-        await promises.appendFile('data/logs.txt', JSON.stringify(logObj) + '\n');
-        console.log('Data has been written to the file');
-      } catch (err) {
-        console.error(err);
-      }
-    });
+    // this.logger.attachTransport(async (logObj) => {
+    //   try {
+    //     await promises.appendFile('data/logs.txt', JSON.stringify(logObj) + '\n');
+    //     console.log('Data has been written to the file');
+    //   } catch (err) {
+    //     console.error(err);
+    //   }
+    // });
   }
   log(...args: unknown[]) {
     this.logger.info(...args);

@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 import { ErrorHTTP } from '../../errors/errors.class';
 import { ProductModel } from '../product/product.models';
 import { BasketModel, BasketProductModel } from './basket.models';
-import { ILoginRequest, ITokenPayload } from '../user/user.types';
+import { UserAuthRequest, ITokenPayload, ICart } from '../user/user.types';
 import { IDough, IDoughModel, IIngredient, IProductModel, ISize, ISizeModel } from '../product/product.types';
 import { IBasketProductModel } from './basket.types';
 
@@ -132,7 +132,7 @@ class BasketService {
     return totalPriceProduct;
   }
 
-  async createOrUpdateBasket(cart: ILoginRequest['cart'], userDTO: UserDTO) {
+  async createOrUpdateBasket(userDTO: UserDTO, cart?: ICart[],) {
     if (!cart) return;
 
     let candidateBasket = await BasketModel.findOne({
@@ -159,7 +159,7 @@ class BasketService {
       if (!productDb) continue;
 
       const productIngredients = productDb.ingredients.filter((ing) =>
-        item.ingredients.find((cartIng) => cartIng.id.toString() === ing._id.toString())
+        item.ingredients.find((cartIng: any) => cartIng.id.toString() === ing._id.toString())
       );
       const productSize = productDb.sizes.find(
         (prSize) => prSize._id.toString() === item.size.id.toString()

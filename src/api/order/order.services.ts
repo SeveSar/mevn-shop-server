@@ -27,10 +27,10 @@ class OrderService {
     let currentRestaurant = null as string | null;
     let newAddressModel:
       | (Document<unknown, any, IOrderProduct> &
-          IOrderProduct &
-          Required<{
-            _id: Types.ObjectId;
-          }>)
+        IOrderProduct &
+        Required<{
+          _id: Types.ObjectId;
+        }>)
       | null = null;
 
     if (typeDelivery === ORDER_TYPE_DELIVERY.ADDRESS) {

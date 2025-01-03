@@ -9,7 +9,6 @@ import { filterRouter } from './api/filter/filter.routes';
 import { basketRouter } from './api/basket/basket.routes';
 
 const router = Router();
-
 router.use('/auth', userRouter);
 router.use('/products', productRouter);
 router.use('/categories', categoryRouter);

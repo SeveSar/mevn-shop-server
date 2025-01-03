@@ -36,7 +36,7 @@ class UserService {
     return { tokens, userDTO };
   }
 
-  async getUser(body: { email: string; password: string }) {
+  async getUserByCredentials(body: { email: string; password: string }) {
     const user = await UserModel.findOne({ email: body.email }).exec();
     if (!user) {
       throw new ErrorHTTP(400, `Пользователь с таким email ${body.email} не существует`);
