@@ -132,7 +132,7 @@ class BasketService {
     return totalPriceProduct;
   }
 
-  async createOrUpdateBasket(userDTO: UserDTO, cart?: ICart[],) {
+  async createOrUpdateBasket(userDTO: UserDTO, cart?: ICart[]) {
     if (!cart) return;
 
     let candidateBasket = await BasketModel.findOne({
