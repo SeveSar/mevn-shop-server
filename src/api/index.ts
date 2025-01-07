@@ -15,7 +15,7 @@ import { errorMiddleware } from '../middleware/error.middleware';
 const app = express();
 const PORT = getEnv('PORT').required().asIntPositive();
 
-const whitelist = ['http://localhost:3000', 'http://localhost:5050'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5050', 'https://mevn-shop-gray.vercel.app'];
 const corsOptions = {
   credentials: true,
   origin: function (origin: any, callback: any) {
