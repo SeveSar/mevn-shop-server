@@ -6,7 +6,7 @@ import path from 'path';
 
 const storageConfig = multer.diskStorage({
   destination(req: Request, file: Express.Multer.File, cb) {
-    cb(null, path.join(__dirname, '..', 'uploads/products'));
+    cb(null, path.join(__dirname, '..', 'public', 'uploads'));
   },
   filename(req: Request, file, cb) {
     const extension = path.extname(file.originalname);

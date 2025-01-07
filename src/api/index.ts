@@ -14,17 +14,20 @@ import { errorMiddleware } from '../middleware/error.middleware';
 
 const app = express();
 const PORT = getEnv('PORT').required().asIntPositive();
-
-const whitelist = ['http://localhost:3000', 'http://localhost:5050', 'https://mevn-shop-gray.vercel.app'];
+const whitelist = ["http://localhost:3000", "http://localhost:5050", 'https://mevn-shop-client-rho.vercel.app'];
 const corsOptions = {
   credentials: true,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  origin: whitelist
+  origin: function (origin: any, callback: any) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
 };
 
-
-app.use(express.static(path.join(__dirname, 'uploads/products')));
-app.use(express.static(path.join(__dirname, 'images')));
+app.use(express.static(path.join(__dirname, '../public')));
+// app.use(express.static(path.join(__dirname, 'images')));
 app.use(cors(corsOptions));
 app.use(json());
 app.use(cookieParser());
@@ -35,9 +38,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', router);
-app.all('*', (_, res) => {
-  res.status(404).send('404: Not Found');
-});
+
 app.use(errorMiddleware);
 
 const start = async () => {
