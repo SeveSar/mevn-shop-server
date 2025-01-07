@@ -16,13 +16,7 @@ const app = express();
 const PORT = getEnv('PORT').required().asIntPositive();
 const whitelist = ["http://localhost:3000", "http://localhost:5050", 'https://mevn-shop-client-rho.vercel.app'];
 const corsOptions = {
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    if (!origin || whitelist.includes(origin)) {
-      callback(null, true); // Разрешаем запросы с указанных доменов
-    } else {
-      callback(new Error("Not allowed by CORS")); // Отклоняем запрос
-    }
-  },
+  origin: 'http://localhost:3000',
   credentials: true, // Разрешаем отправку куков
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Разрешенные методы
   allowedHeaders: [
