@@ -9,7 +9,20 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "typeRoots": ["./typing-stubs", "./node_modules/@types"]
+    "typeRoots": [
+      "./typing-stubs",
+      "./node_modules/@types"
+    ]
   },
-
+  "include": [
+    "src",
+    "api"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "files": [
+    "types.d.ts"
+  ]
 }

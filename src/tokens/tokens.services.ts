@@ -5,10 +5,10 @@ import { RefreshTokenModel } from './tokens.models';
 
 class TokenService {
   generateTokens(payload: ITokenPayload) {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET || '', {
       expiresIn: '7m',
     });
-    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET || '', {
       expiresIn: '7d',
     });
 
@@ -43,7 +43,7 @@ class TokenService {
 
   validateAccessToken(accessToken: string) {
     try {
-      const userDecoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET) as ITokenPayload;
+      const userDecoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET || '') as ITokenPayload;
       return userDecoded;
     } catch (e) {
       return null;
@@ -52,7 +52,7 @@ class TokenService {
 
   validateRefreshToken(refreshToken: string) {
     try {
-      const userDecoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET) as ITokenPayload;
+      const userDecoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || '') as ITokenPayload;
       return userDecoded;
     } catch (e) {
       return null;
