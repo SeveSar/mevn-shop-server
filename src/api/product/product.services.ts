@@ -19,15 +19,15 @@ export class ProductServices {
     return item;
   }
 
-  async findAll(filters: string[]) {
+  async findAll(filters: string[] | undefined) {
     let items;
+    console.log(filters, 'filters')
     if (filters) {
       items = await ProductModel.find({
         filters: {
           $in: filters,
         },
       })
-        .populate('filters')
         .exec();
     } else {
       items = await ProductModel.find().populate('filters').exec();

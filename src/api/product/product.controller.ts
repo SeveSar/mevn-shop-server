@@ -31,8 +31,8 @@ class ProductController {
     }
   }
 
-  async findAll(req: Request<{ filters: string[] }>, res: Response, next: NextFunction) {
-    const { filters } = req.params;
+  async findAll(req: Request<{}, {}, {}, { filters: string[] | undefined }>, res: Response, next: NextFunction) {
+    const { filters } = req.query;
     try {
       const products = await productService.findAll(filters);
 

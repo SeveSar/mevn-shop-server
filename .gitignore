@@ -16,7 +16,6 @@ coverage
 dist
 *.local
 static
-public
 /cypress/videos/
 /cypress/screenshots/
 
