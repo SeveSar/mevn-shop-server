@@ -3,7 +3,6 @@ dotenv.config();
 import express from 'express';
 import { get as getEnv } from 'env-var';
 import path from 'path';
-import axios from 'axios';
 import { json } from 'body-parser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -14,7 +13,7 @@ import { router } from './routes';
 import { errorMiddleware } from './middleware/error.middleware';
 
 const app = express();
-const PORT = getEnv('PORT').required().asIntPositive();
+const PORT = process.env.PORT || getEnv('PORT').required().asIntPositive();
 
 const whitelist = ['http://localhost:3000', 'http://localhost:5050'];
 const corsOptions = {
@@ -41,7 +40,9 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', router);
-
+app.all('*', (_, res) => {
+  res.status(404).send('404: Not Found');
+});
 app.use(errorMiddleware);
 
 const start = async () => {
