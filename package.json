@@ -2,12 +2,12 @@
   "name": "pizza-server",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "index.js",
   "engines": {
     "node": ">=6.0.0"
   },
   "scripts": {
-    "start": "node ./dist/main.js",
+    "start": "node ./dist/index.js",
     "dev": "nodemon",
     "build": "tsc",
     "v": "node -v",

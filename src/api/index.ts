@@ -7,10 +7,10 @@ import { json } from 'body-parser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-import { connectToMongoDB } from './database/mongo';
-import { loggerService } from './logger';
+import { connectToMongoDB } from '../database/mongo';
+import { loggerService } from '../logger';
 import { router } from './routes';
-import { errorMiddleware } from './middleware/error.middleware';
+import { errorMiddleware } from '../middleware/error.middleware';
 
 const app = express();
 const PORT = process.env.PORT || getEnv('PORT').required().asIntPositive();
