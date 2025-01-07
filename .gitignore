@@ -13,6 +13,7 @@ files
 .DS_Store
 dist-ssr
 coverage
+dist
 *.local
 static
 public

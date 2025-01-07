@@ -13,7 +13,7 @@ import { router } from './routes';
 import { errorMiddleware } from '../middleware/error.middleware';
 
 const app = express();
-const PORT = process.env.PORT || getEnv('PORT').required().asIntPositive();
+const PORT = getEnv('PORT').required().asIntPositive();
 
 const whitelist = ['http://localhost:3000', 'http://localhost:5050'];
 const corsOptions = {
