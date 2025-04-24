@@ -15,14 +15,15 @@ import { errorMiddleware } from '../middleware/error.middleware';
 const app = express();
 const PORT = process.env.PORT || getEnv('PORT').required().asIntPositive();
 const whitelist = ['http://localhost:3000', 'http://localhost:5050', 'https://mevn-shop-client-rho.vercel.app'];
-const corsOptions = {
-  credentials: true,
-  origin: whitelist
-};
+
 
 
 app.use(express.static(path.join(__dirname, '../../public')));
-app.use(cors(corsOptions));
+app.use(cors({
+  credentials: true,
+  origin: whitelist,
+  
+}));
 app.use(json());
 app.use(cookieParser());
 

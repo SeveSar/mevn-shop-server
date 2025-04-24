@@ -54,7 +54,7 @@ class UserController {
       res.cookie('refreshToken', tokens.refreshToken, {
         httpOnly: true,
         secure: true,
-        // sameSite: 'none',
+        sameSite: 'none',
         // domain: "mevn-cloud-server.onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
