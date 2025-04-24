@@ -21,7 +21,7 @@ const whitelist = ['http://localhost:3000', 'http://localhost:5050', 'https://me
 app.use(express.static(path.join(__dirname, '../../public')));
 app.use(cors({
   credentials: true,
-  origin: 'https://mevn-shop-client-rho.vercel.app',
+  origin: whitelist,
   
 }));
 app.use(json());
