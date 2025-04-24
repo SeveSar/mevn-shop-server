@@ -23,7 +23,7 @@ class UserController {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        // domain: "mevn-cloud-server.onrender.com",
+        domain: "vercel.app",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -55,7 +55,7 @@ class UserController {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        // domain: "mevn-cloud-server.onrender.com",
+        domain: "vercel.app",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -90,7 +90,7 @@ class UserController {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        // domain: "mevn-cloud-server.onrender.com",
+        domain: "vercel.app",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       return res.json({
