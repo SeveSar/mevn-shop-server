@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "@antfu"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "antfu/if-newline": "off",
+    "no-console": "off",
+    "@typescript-eslint/consistent-type-imports": "0"
+  }
+}
