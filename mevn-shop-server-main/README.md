@@ -1,1 +1,0 @@
-# mevn-shop-server
